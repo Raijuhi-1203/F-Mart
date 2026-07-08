@@ -1,0 +1,31 @@
+
+.link-success {
+    color: #218838;
+    padding: 2px;
+    font-size: 15px;
+}
+
+
+.link-danger {
+    color: #dc3545;
+    padding: 2px;
+    font-size: 15px;
+}
+
+.link-primary {
+    color: #007bff;
+    padding: 2px;
+    font-size: 15px;
+}
+
+.link-info {
+    color: #17a2b8;
+    padding: 2px;
+    font-size: 15px;
+}
+
+.link-warning {
+    color: #ffc107;
+    padding: 2px;
+    font-size: 15px;
+}

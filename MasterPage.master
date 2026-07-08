@@ -1,0 +1,357 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html>
+
+<html>
+
+<head runat="server">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Furniture Mart – Smart Furniture for Learning & Work Spaces</title>
+    <meta name="description" content="Shop premium office and school furniture at Furniture Mart. Affordable prices, durable
+        designs, and fast delivery across India">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.jpg" rel="icon">
+   
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="assets/vendor/drift-zoom/drift-basic.css" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="assets/css/main.css" rel="stylesheet">
+</head>
+
+<body class="index-page">
+
+    <form id="form1" runat="server">
+
+        <header id="header" class="header sticky-top">
+            <!-- Top Bar -->
+            <div class="top-bar py-2">
+                <div class="container-fluid container-xl">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 d-none d-lg-flex">
+                            <div class="top-bar-item">
+                                <i class="bi bi-telephone-fill me-2"></i>
+                                <span>Need help? Call us: </span>
+                                <a href="tel:+91-92355 01383">+91-92355 01383</a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-md-12 text-center">
+                            <div class="announcement-slider swiper init-swiper">
+                                <script type="application/json" class="swiper-config">
+                                    {
+                                      "loop": true,
+                                      "speed": 600,
+                                      "autoplay": {
+                                        "delay": 5000
+                                      },
+                                      "slidesPerView": 1,
+                                      "direction": "vertical",
+                                      "effect": "slide"
+                                    }
+                                </script>
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide" style="color: white;">★ Transforming Spaces, Inspiring Success ★</div>
+                                    <div class="swiper-slide" style="color: white;">★ Smart Furniture for Smarter Living ★</div>
+                                    <div class="swiper-slide" style="color: white;">★ Comfortable Learning, Inspired Minds ★</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Header -->
+            <div class="main-header">
+                <div class="container-fluid container-xl">
+                    <div class="d-flex py-3 align-items-center justify-content-between">
+
+                        <!-- Logo -->
+                        <a href="index.aspx" class="logo d-flex align-items-center">
+                            <img src="assets/img/logo.png" style="width: 150px; height: auto;" />
+                        </a>
+
+                        <!-- Search -->
+                        <div class="search-form desktop-search-form">
+                            <div class="input-group">
+                                <asp:TextBox ID="serachtext" runat="server" type="text" class="form-control" placeholder="Search for products"></asp:TextBox>
+                                <button class="btn" type="submit" id="btnsrch" runat="server" onserverclick="btnsrch_ServerClick">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="header-actions d-flex align-items-center justify-content-end">
+
+                            <!-- Mobile Search Toggle -->
+                            <button class="header-action-btn mobile-search-toggle d-xl-none" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearch" aria-expanded="false" aria-controls="mobileSearch">
+                                <i class="bi bi-search"></i>
+                            </button>
+
+                            <!-- Account -->
+                            <div class="dropdown account-dropdown">
+                                <button class="header-action-btn" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-header">
+                                        <h6>Welcome to <span class="sitename">The Furniture Mart</span></h6>
+                                        <p class="mb-0">Access account &amp; manage orders</p>
+                                    </div>
+                                    <div class="dropdown-body">
+                                        <a class="dropdown-item d-flex align-items-center" href="account.aspx">
+                                            <i class="bi bi-person-circle me-2"></i>
+                                            <span>My Profile</span>
+                                        </a>
+                                        <a class="dropdown-item d-flex align-items-center" href="order.aspx">
+                                            <i class="bi bi-bag-check me-2"></i>
+                                            <span>My Orders</span>
+                                        </a>
+                                        <a class="dropdown-item d-flex align-items-center" href="wishlist.aspx">
+                                            <i class="bi bi-heart me-2"></i>
+                                            <span>My Wishlist</span>
+                                        </a>
+                                       
+                                    </div>
+                                    <div class="dropdown-footer">
+                                        <a id="btnregister" runat="server" href="login.aspx" class="btn btn-primary w-100 mb-2">Sign In</a>
+                                        <a id="btnuser" runat="server" class="btn btn-primary w-100 mb-2"></a>
+                                        <a id="btnlogout" runat="server" href="logout.aspx" class="btn btn-primary w-100 mb-2">Logout</a>
+                                        <a id="btnlogin" runat="server" href="register.aspx" class="btn btn-outline-primary w-100">Register</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Wishlist -->
+                            <a href="wishlist.aspx" class="header-action-btn d-none d-md-block">
+                                <i class="bi bi-heart"></i>
+                                <span class="badge" id="wishlistcount" runat="server">0</span>
+                            </a>
+
+                            <!-- Cart -->
+                            <a href="cart.aspx" class="header-action-btn">
+                                <i class="bi bi-cart3"></i>
+                                <span class="badge" id="cartcount" runat="server">0</span>
+                            </a>
+
+                            <!-- Mobile Navigation Toggle -->
+                            <i class="mobile-nav-toggle d-xl-none bi bi-list me-0"></i>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="header-nav">
+                <div class="container-fluid container-xl position-relative">
+                    <nav id="navmenu" class="navmenu">
+                        <ul>
+                            <li><a href="index.aspx" class="active">Home</a></li>
+                            <li><a href="about.aspx">About</a></li>
+                            <li><a href="category.aspx">Category</a></li>
+
+                            <asp:Repeater ID="Repeater1" runat="server" OnItemCommand="Repeater1_ItemCommand" OnItemDataBound="Repeater1_ItemDataBound">
+                                <ItemTemplate>
+
+                                    <li class="dropdown"><a href="#"><span><%# Eval("category_name") %></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+
+                                        <asp:Label ID="catid" runat="server" hidden Text='<%# Eval("category_id") %>'></asp:Label>
+                                        <ul>
+
+                                            <asp:Repeater ID="Repeater2" runat="server" OnItemCommand="Repeater2_ItemCommand">
+                                                <ItemTemplate>
+
+                                                    <li><a href="categories-product.aspx?ref=<%# Eval("category_id") %>"><%# Eval("category_name") %></a></li>
+
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+
+                                        </ul>
+                                    </li>
+
+                                </ItemTemplate>
+                            </asp:Repeater>
+
+
+                            <asp:Repeater ID="rptbinddata" runat="server" OnItemCommand="rptbinddata_ItemCommand">
+                                <ItemTemplate>
+                                    <li><a href="categories-product.aspx?ref=<%# Eval("category_id") %>"><%# Eval("category_name") %></a></li>
+                                </ItemTemplate>
+                            </asp:Repeater>
+
+
+                            <li><a href="contact.aspx">Contact</a></li>
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Mobile Search Form -->
+            <div class="collapse" id="mobileSearch">
+                <div class="container">
+                    <div class="search-form">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for products">
+                            <button class="btn" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
+
+        <main class="main">
+            <div>
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>
+        </main>
+
+    </form>
+
+    <footer id="footer" class="footer dark-background">
+        <div class="footer-main">
+            <div class="container">
+                <div class="row gy-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-widget footer-about">
+                            <a href="index.aspx" class="logo">
+                                <img src="assets/img/logo.png" style="width: 150px; height: auto;" />
+                            </a>
+                            <p>Welcome to Furniture Mart, Gorakhpur’s premier destination for stylish and high-quality furniture. With a commitment to transforming spaces.</p>
+
+                            <div class="social-links mt-4">
+                                <h5>Connect With Us</h5>
+                                <div class="social-icons">
+                                    <a href="https://www.facebook.com/profile.php?id=61572936875665" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://www.instagram.com/helpfurnituremart/" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+
+                                    <a href="https://www.youtube.com/@FurnitureMartF-Mart" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="footer-widget">
+                            <h4>Shop</h4>
+                            <ul class="footer-links">
+                                <li><a href="new-arrival.aspx">New Arrivals</a></li>
+                                <li><a href="bestsellers.aspx">Bestsellers</a></li>
+                                <li><a href="office-furniture.aspx">Office Furniture</a></li>
+                                <li><a href="school-furniture.aspx">School Furniture</a></li>
+                                <li><a href="mattress.aspx">Mattress</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="footer-widget">
+                            <h4>Support</h4>
+                            <ul class="footer-links">
+                                <li><a href="contact.aspx">Help Center</a></li>
+                                <li><a href="privacy.aspx">Privacy Policy</a></li>
+                                <li><a href="tos.aspx">Term & Condition</a></li>
+                                <li><a href="return-policy.aspx">Returns &amp; Exchanges</a></li>
+                                <li><a href="contact.aspx">Contact Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-widget">
+                            <h4>Contact Information</h4>
+                            <div class="footer-contact">
+                                <div class="contact-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>Bank Rd, VindyaVasini Nagar, Gorakhpur, Uttar Pradesh 273001</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="bi bi-telephone"></i>
+                                    <span>+91-92355 01383</span>
+                                </div>
+
+                                <div class="contact-item">
+                                    <i class="bi bi-clock"></i>
+                                    <span>Monday-Friday: 9am-6pm<br>
+                                        Saturday: 10am-4pm<br>
+                                        Sunday: Closed</span>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row gy-3 align-items-center">
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="copyright">
+                            <p>© <span>Copyright 2026</span> <strong class="sitename">The Furniture Mart</strong>. All Rights Reserved. Designed by <a href="https://digitalbull.in/">DigitalBull</a></p>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-4 col-md-12">
+                        <div class="d-flex flex-wrap justify-content-lg-end justify-content-center align-items-center gap-4">
+
+
+                            <div class="legal-links">
+                                <a href="tos.aspx">Terms</a>
+                                <a href="privacy.aspx">Privacy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/drift-zoom/Drift.min.js"></script>
+    <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+
+    <!-- Main JS File -->
+    <script src="assets/js/main.js"></script>
+
+
+</body>
+</html>
