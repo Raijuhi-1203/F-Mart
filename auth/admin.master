@@ -38,11 +38,10 @@
     <link href="assets/css/modern.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/custom.css" rel="stylesheet" type="text/css" />
 
-  <!-- summernote -->
-    <link rel="stylesheet" href="assets/summernote/summernote-bs4.css"/>
+    <!-- summernote -->
+    <link rel="stylesheet" href="assets/summernote/summernote-bs4.css" />
 
     <style>
-
         hr {
             border-top: 1px solid #083b3f;
         }
@@ -89,7 +88,7 @@
 
 </head>
 <body class="page-header-fixed compact-menu page-horizontal-bar">
-   
+
     <form id="form1" runat="server">
 
         <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
@@ -104,7 +103,7 @@
         <div class="overlay"></div>
 
         <main class="page-content content-wrap">
-            <div class="navbar" style="background:#050a30 !important">
+            <div class="navbar" style="background: #050a30 !important">
                 <div class="navbar-inner container">
                     <div class="sidebar-pusher">
                         <a href="javascript:void(0);" class="waves-effect waves-button waves-classic push-sidebar" style="color: white">
@@ -112,15 +111,15 @@
                         </a>
                     </div>
                     <div class="logo-box">
-                        <a href="dashboard" class="logo-text"><span style="color: white">Admin Panel</span></a>
+                        <a href="dashboard.aspx" class="logo-text"><span style="color: white">Admin Panel</span></a> 
                     </div>
 
-                    <div class="topmenu-outer" style="background:#050a30 !important">
+                    <div class="topmenu-outer" style="background: #050a30 !important">
                         <div class="top-menu">
 
                             <ul class="nav navbar-nav navbar-right">
 
-                                 <%--<li class="dropdown">
+                                <%--<li class="dropdown">
                                     <a href="product-shop.aspx" class="dropdown-toggle waves-effect waves-button waves-classic">
                                         <i class="fas fa-store"></i>&nbsp;Product Shop
                                     </a>
@@ -152,7 +151,7 @@
                                         <li><a href="add-category.aspx">Add Category</a></li>
                                         <li><a href="manage-category.aspx">Manage Category</a></li>
 
-                                       <%-- <li><a href="add-menu-category.aspx">Add Restaurant Category</a></li>
+                                        <%-- <li><a href="add-menu-category.aspx">Add Restaurant Category</a></li>
                                         <li><a href="manage-menu-category.aspx">Manage Restaurent Category</a></li>--%>
                                     </ul>
                                 </li>
@@ -168,21 +167,21 @@
                                         <li><a href="manage-product-to-section.aspx">Manage Product To Section</a></li>
                                     </ul>
                                 </li>--%>
-                                
-                              
+
+
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle waves-effect waves-button waves-classic" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Setting
                                     </a>
                                     <ul class="dropdown-menu dropdown-list" role="menu">
                                         <li><a href="gst.aspx">GST Setting</a></li>
-                                       <%-- <li><a href="slider.aspx">Slider</a></li>
+                                        <%-- <li><a href="slider.aspx">Slider</a></li>
                                            <li><a href="offer-banner.aspx">Offer Banner</a></li>--%>
                                         <li><a href="unit-setting.aspx">Unit Setting</a></li>
                                         <%--<li><a href="coupon.aspx">Coupon Code</a></li>--%>
                                         <li><a href="shipping-charge.aspx">Shipping Charge</a></li>
                                         <li><a href="minimum-order.aspx">Minimum Order Amount</a></li>
-                                     <%--   <li><a href="sms-credentials">Textlocal Credentials</a></li>--%>
-                                         <li><a href="manage-city.aspx">Manage City</a></li> 
+                                        <%--   <li><a href="sms-credentials">Textlocal Credentials</a></li>--%>
+                                        <li><a href="manage-city.aspx">Manage City</a></li>
                                         <li><a href="manage-pincode.aspx">Manage Pincode</a></li>
                                     </ul>
                                 </li>
@@ -228,9 +227,9 @@
                 <div class="page-sidebar-inner" id="navigationDIV" runat="server">
                     <ul class="menu accordion-menu">
                         <li class="nav-heading"><span>Navigation</span></li>
-                       
 
-                         <li class="droplink"><a href="#"><i class="fas fa-rupee-sign"></i>
+
+                        <li class="droplink"><a href="#"><i class="fas fa-rupee-sign"></i>
                             <p>&nbsp;Orders</p>
                             <span class="arrow"></span></a>
                             <ul class="sub-menu">
@@ -239,8 +238,9 @@
                                 <li><a href="cancel-orders.aspx">Cancelled</a></li>
                             </ul>
                         </li>
+                         
 
-                       <%-- <li class="droplink"><a href="#"><i class="fas fa-rupee-sign"></i>
+                        <%-- <li class="droplink"><a href="#"><i class="fas fa-rupee-sign"></i>
                             <p>&nbsp;Food Orders</p>
                             <span class="arrow"></span></a>
                             <ul class="sub-menu">
@@ -249,7 +249,7 @@
                                 <li><a href="today-sale-report.aspx">Sellerwise Sale Report</a></li>
                             </ul>
                         </li>--%>
-                 
+
 
                         <li class="droplink"><a href="#"><i class="fas fa-paste"></i>
                             <p>&nbsp;Analytics Report</p>
@@ -274,7 +274,7 @@
                             </ul>
                         </li>
 
-                         <%--<li class="droplink"><a href="#"><i class="fas fa-utensils"></i>
+                        <%--<li class="droplink"><a href="#"><i class="fas fa-utensils"></i>
                             <p>&nbsp;Food Items</p>
                             <span class="arrow"></span></a>
                             <ul class="sub-menu">
@@ -283,9 +283,9 @@
                             </ul>
                         </li>--%>
 
-                      
 
-                          <li class="droplink"><a href="#"><i class="fas fa-people-carry"></i>
+
+                        <li class="droplink"><a href="#"><i class="fas fa-people-carry"></i>
                             <p>&nbsp;Delivery Boy</p>
                             <span class="arrow"></span></a>
                             <ul class="sub-menu">
@@ -303,7 +303,7 @@
                             </ul>
                         </li>
 
-                       <%-- <li class="droplink"><a href="#"><i class="fa fa-users"></i>
+                        <%-- <li class="droplink"><a href="#"><i class="fa fa-users"></i>
                             <p>&nbsp;Restaurant Seller</p>
                             <span class="arrow"></span></a>
                             <ul class="sub-menu">
@@ -334,7 +334,7 @@
 
                 <div id="main-wrapper" class="container">
 
-                
+
                     <div class="row">
                         <div class="col-lg-12 col-md-2">
                             <div>
@@ -347,17 +347,18 @@
                 <div class="page-footer" style="position: fixed; left: 0px; bottom: 0px; background: #000 !important">
                     <div class="container">
                         <center>
-                             <a href="https://digitalbull.in/" style="text-decoration: none;color:white">
-                            <span>Developed</span>  by <span style="color: #fff; font-weight: bold">Digital Bull</span></a>
+                            <a href="https://digitalbull.in/" style="text-decoration: none; color: white">
+                                <span>Developed</span>  by <span style="color: #fff; font-weight: bold">Digital Bull</span></a>
                         </center>
                     </div>
                 </div>
             </div>
-        </main><!-- Page Content -->
+        </main>
+        <!-- Page Content -->
         <div class="cd-overlay"></div>
     </form>
 
-     <!-- Summernote -->
+    <!-- Summernote -->
     <script src="assets/summernote/summernote-bs4.min.js"></script>
     <script>
         $('.textarea').summernote({

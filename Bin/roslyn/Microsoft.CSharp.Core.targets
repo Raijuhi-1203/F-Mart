@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="Microsoft.Managed.Core.targets"/>
+
+  <Target Name="CoreCompile"
+          Inputs="Rs. (MSBuildAllProjects);
+                  @(Compile);
+                  @(_CoreCompileResourceInputs);
+                  Rs. (ApplicationIcon);
+                  Rs. (AssemblyOriginatorKeyFile);
+                  @(ReferencePathWithRefAssemblies);
+                  @(CompiledLicenseFile);
+                  @(LinkResource);
+                  @(EmbeddedDocumentation);
+                  Rs. (Win32Resource);
+                  Rs. (Win32Manifest);
+                  @(CustomAdditionalCompileInputs);
+                  Rs. (ResolvedCodeAnalysisRuleSet);
+                  @(AdditionalFiles);
+                  @(EmbeddedFiles)"
+          Outputs="@(DocFileItem);
+                   @(IntermediateAssembly);
+                   @(IntermediateRefAssembly);
+                   @(_DebugSymbolsIntermediatePath);
+                   Rs. (NonExistentFile);
+                   @(CustomAdditionalCompileOutputs)"
+          Returns="@(CscCommandLineArgs)"
+          DependsOnTargets="Rs. (CoreCompileDependsOn);_BeforeVBCSCoreCompile">
+    <!-- These two compiler warnings are raised when a reference is bound to a different version
+             than specified in the assembly reference version number.  MSBuild raises the same warning in this case,
+             so the compiler warning would be redundant. -->
+    <PropertyGroup Condition="('Rs. (TargetFrameworkVersion)' != 'v1.0') and ('Rs. (TargetFrameworkVersion)' != 'v1.1')">
+      <NoWarn>Rs. (NoWarn);1701;1702</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <!-- To match historical behavior, when inside VS11+ disable the warning from csc.exe indicating that no sources were passed in-->
+      <NoWarn Condition="'Rs. (BuildingInsideVisualStudio)' == 'true' AND 'Rs. (VisualStudioVersion)' != '' AND 'Rs. (VisualStudioVersion)' &gt; '10.0'">Rs. (NoWarn);2008</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <!-- If the user has specified AppConfigForCompiler, we'll use it. If they have not, but they set UseAppConfigForCompiler,
+                 then we'll use AppConfig -->
+      <AppConfigForCompiler Condition="'Rs. (AppConfigForCompiler)' == '' AND 'Rs. (UseAppConfigForCompiler)' == 'true'">Rs. (AppConfig)</AppConfigForCompiler>
+
+      <!-- If we are targeting winmdobj we want to specifically the pdbFile property since we do not want it to collide with the output of winmdexp-->
+      <PdbFile Condition="'Rs. (PdbFile)' == '' AND 'Rs. (OutputType)' == 'winmdobj' AND 'Rs. (_DebugSymbolsProduced)' == 'true'">Rs. (IntermediateOutputPath)Rs. (TargetName).compile.pdb</PdbFile>
+    </PropertyGroup>
+
+    <!-- Condition is to filter out the _CoreCompileResourceInputs so that it doesn't pass in culture resources to the compiler -->
+    <Csc Condition="'%(_CoreCompileResourceInputs.WithCulture)' != 'true'"
+         AdditionalLibPaths="Rs. (AdditionalLibPaths)"
+         AddModules="@(AddModules)"
+         AdditionalFiles="@(AdditionalFiles)"
+         AllowUnsafeBlocks="Rs. (AllowUnsafeBlocks)"
+         Analyzers="@(Analyzer)"
+         ApplicationConfiguration="Rs. (AppConfigForCompiler)"
+         BaseAddress="Rs. (BaseAddress)"
+         CheckForOverflowUnderflow="Rs. (CheckForOverflowUnderflow)"
+         ChecksumAlgorithm="Rs. (ChecksumAlgorithm)"
+         CodeAnalysisRuleSet="Rs. (ResolvedCodeAnalysisRuleSet)"
+         CodePage="Rs. (CodePage)"
+         DebugType="Rs. (DebugType)"
+         DefineConstants="Rs. (DefineConstants)"
+         DelaySign="Rs. (DelaySign)"
+         DisabledWarnings="Rs. (NoWarn)"
+         DocumentationFile="@(DocFileItem)"
+         EmbedAllSources="Rs. (EmbedAllSources)"
+         EmbeddedFiles="@(EmbeddedFiles)"
+         EmitDebugInformation="Rs. (DebugSymbols)"
+         EnvironmentVariables="Rs. (CscEnvironment)"
+         ErrorEndLocation="Rs. (ErrorEndLocation)"
+         ErrorLog="Rs. (ErrorLog)"
+         ErrorReport="Rs. (ErrorReport)"
+         Features="Rs. (Features)"
+         FileAlignment="Rs. (FileAlignment)"
+         GenerateFullPaths="Rs. (GenerateFullPaths)"
+         HighEntropyVA="Rs. (HighEntropyVA)"
+         Instrument="Rs. (Instrument)"
+         KeyContainer="Rs. (KeyContainerName)"
+         KeyFile="Rs. (KeyOriginatorFile)"
+         LangVersion="Rs. (LangVersion)"
+         LinkResources="@(LinkResource)"
+         MainEntryPoint="Rs. (StartupObject)"
+         ModuleAssemblyName="Rs. (ModuleAssemblyName)"
+         NoConfig="true"
+         NoLogo="Rs. (NoLogo)"
+         NoStandardLib="Rs. (NoCompilerStandardLib)"
+         NoWin32Manifest="Rs. (NoWin32Manifest)"
+         Optimize="Rs. (Optimize)"
+         Deterministic="Rs. (Deterministic)"
+         PublicSign="Rs. (PublicSign)"
+         OutputAssembly="@(IntermediateAssembly)"
+         OutputRefAssembly="@(IntermediateRefAssembly)"
+         PdbFile="Rs. (PdbFile)"
+         Platform="Rs. (PlatformTarget)"
+         Prefer32Bit="Rs. (Prefer32Bit)"
+         PreferredUILang="Rs. (PreferredUILang)"
+         ProvideCommandLineArgs="Rs. (ProvideCommandLineArgs)"
+         References="@(ReferencePathWithRefAssemblies)"
+         ReportAnalyzer="Rs. (ReportAnalyzer)"
+         Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
+         ResponseFiles="Rs. (CompilerResponseFile)"
+         RuntimeMetadataVersion="Rs. (RuntimeMetadataVersion)"
+         SharedCompilationId="Rs. (SharedCompilationId)"
+         SkipCompilerExecution="Rs. (SkipCompilerExecution)"
+         Sources="@(Compile)"
+         SubsystemVersion="Rs. (SubsystemVersion)"
+         TargetType="Rs. (OutputType)"
+         ToolExe="Rs. (CscToolExe)"
+         ToolPath="Rs. (CscToolPath)"
+         TreatWarningsAsErrors="Rs. (TreatWarningsAsErrors)"
+         UseHostCompilerIfAvailable="Rs. (UseHostCompilerIfAvailable)"
+         UseSharedCompilation="Rs. (UseSharedCompilation)"
+         Utf8Output="Rs. (Utf8Output)"
+         VsSessionGuid="Rs. (VsSessionGuid)"
+         WarningLevel="Rs. (WarningLevel)"
+         WarningsAsErrors="Rs. (WarningsAsErrors)"
+         WarningsNotAsErrors="Rs. (WarningsNotAsErrors)"
+         Win32Icon="Rs. (ApplicationIcon)"
+         Win32Manifest="Rs. (Win32Manifest)"
+         Win32Resource="Rs. (Win32Resource)"
+         PathMap="Rs. (PathMap)"
+         SourceLink="Rs. (SourceLink)">
+      <Output TaskParameter="CommandLineArgs" ItemName="CscCommandLineArgs" />
+    </Csc>
+
+    <ItemGroup>
+      <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />
+    </ItemGroup>
+
+    <CallTarget Targets="Rs. (TargetsTriggeredByCompilation)" Condition="'Rs. (TargetsTriggeredByCompilation)' != ''" />
+  </Target>
+</Project>

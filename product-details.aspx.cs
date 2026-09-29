@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Activities.Expressions;
 using System.Collections.Generic;
 using System.Configuration;
@@ -29,6 +29,7 @@ public partial class product_details : System.Web.UI.Page
         if (!IsPostBack)
         {
             BindData();
+            BindSimilarProducts();
 
             SqlDataReader dr_get_data = mst.Select_Operation("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where a.product_id='" + Request.QueryString[0] + "'");
             if (dr_get_data.Read())
@@ -45,6 +46,77 @@ public partial class product_details : System.Web.UI.Page
                 
             }
             dr_get_data.Close();
+        }
+    }
+
+    private void BindSimilarProducts()
+    {
+        try
+        {
+            string currentProdId = "";
+            if (Request.QueryString.Count > 0 && !string.IsNullOrEmpty(Request.QueryString[0]))
+            {
+                currentProdId = Request.QueryString[0].Trim();
+            }
+
+            string query = @"SELECT TOP 6 
+                a.product_id, 
+                a.product_full_name, 
+                a.product_parent_category_name, 
+                b.product_sell_price, 
+                b.product_market_price, 
+                b.product_discount_percentage,
+                (SELECT TOP 1 photo_path FROM ecommerce_product_photos WHERE product_id = a.product_id ORDER BY id ASC) as photo_path
+            FROM ecommerce_product a
+            OUTER APPLY (SELECT TOP 1 * FROM ecommerce_product_price WHERE product_id = a.product_id ORDER BY id ASC) b
+            WHERE a.product_id <> '" + currentProdId + @"'
+            ORDER BY 
+                (CASE WHEN a.product_parent_category_id = (SELECT TOP 1 product_parent_category_id FROM ecommerce_product WHERE product_id = '" + currentProdId + @"') THEN 0 ELSE 1 END),
+                a.id DESC";
+
+            DataTable dt = mst.GetData(query);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                rptSimilarProducts.DataSource = dt;
+                rptSimilarProducts.DataBind();
+                rptSimilarProducts.Visible = true;
+                pnlNoSimilar.Visible = false;
+            }
+            else
+            {
+                rptSimilarProducts.Visible = false;
+                pnlNoSimilar.Visible = true;
+            }
+        }
+        catch (Exception)
+        {
+            rptSimilarProducts.Visible = false;
+            pnlNoSimilar.Visible = true;
+        }
+    }
+
+    protected void rptSimilarProducts_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+        if (Session["customer_id"] != null)
+        {
+            if (e.CommandName == "AddCart")
+            {
+                string product_id = Convert.ToString(e.CommandArgument);
+                wb.addtocart("1", Session["customer_id"].ToString(), "", product_id, get_price_id(product_id));
+                Response.Write("<script>alert('Product added in cart.');</script>");
+                BindSimilarProducts();
+            }
+            else if (e.CommandName == "Wishlist")
+            {
+                string product_id = Convert.ToString(e.CommandArgument);
+                wb.addtowishlist("1", Session["customer_id"].ToString(), product_id, get_price_id(product_id));
+                Response.Write("<script>alert('Product added in wishlist.');</script>");
+                BindSimilarProducts();
+            }
+        }
+        else
+        {
+            Response.Redirect("login.aspx");
         }
     }
 

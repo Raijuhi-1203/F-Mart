@@ -34,7 +34,7 @@ public partial class auth_manage_product : System.Web.UI.Page
         DataTable dtbl = new DataTable();
         con.Open();
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT id,product_id,verticle_name,product_full_name,product_hsnORsac,product_parent_category_name,publish_status,product_sub_category_name,product_postion_no FROM ecommerce_product where product_seller_id='0' AND product_type='Grocery' AND (product_short_name LIKE '%' + @search + '%' OR product_full_name LIKE '%' + @search + '%' OR product_description LIKE '%' + @search + '%' OR product_hsnORsac LIKE '%' + @search + '%' OR product_parent_category_name LIKE '%' + @search + '%' OR product_sub_category_name LIKE '%' + @search + '%' OR product_brand_name LIKE '%' + @search + '%' OR product_full_description LIKE '%' + @search + '%') order by id asc";
+        cmd.CommandText = "SELECT id,product_id,verticle_name,product_full_name,product_hsnORsac,product_parent_category_name,publish_status,product_sub_category_name,product_postion_no FROM ecommerce_product where product_seller_id='0' AND product_type='Grocery' AND (product_short_name LIKE '%' + @search + '%' OR product_full_name LIKE '%' + @search + '%' OR product_description LIKE '%' + @search + '%' OR product_hsnORsac LIKE '%' + @search + '%' OR product_parent_category_name LIKE '%' + @search + '%' OR product_sub_category_name LIKE '%' + @search + '%' OR product_brand_name LIKE '%' + @search + '%' OR product_full_description LIKE '%' + @search + '%') order by id DESC";
         cmd.Connection = con;
         SqlDataAdapter sqlDa = new SqlDataAdapter(cmd);
         cmd.Parameters.AddWithValue("@search", txtsearch.Text.Trim());
@@ -56,7 +56,6 @@ public partial class auth_manage_product : System.Web.UI.Page
             grdproducts.Rows[0].Cells[0].Text = "No Data Found ..!";
             grdproducts.Rows[0].Cells[0].HorizontalAlign = HorizontalAlign.Center;
         }
-
 
         con.Close();
 

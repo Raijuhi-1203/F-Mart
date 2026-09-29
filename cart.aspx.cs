@@ -102,12 +102,14 @@ public partial class cart : System.Web.UI.Page
 
     private void BindData()
     {
-        rptbinddata.DataSource = mst.GetData("select d.*,a.*,b.*,c.*,(CAST(d.cart_qty as float) * CAST(b.product_sell_price as float)) as total from ecommerce_cart d left join ecommerce_product as a on d.product_id=a.product_id left join ecommerce_product_price as b on d.product_id=b.product_id left join ecommerce_product_photos as c on d.product_id=c.product_id where d.customer_id='" + Session["customer_id"].ToString() +"'");
+        rptbinddata.DataSource = mst.GetData("select d.*,a.*,b.*,c.*, d.id as cart_id,(CAST(d.cart_qty as float) * CAST(b.product_sell_price as float)) as total from ecommerce_cart d left join ecommerce_product as a on d.product_id=a.product_id left join ecommerce_product_price as b on d.product_id=b.product_id left join ecommerce_product_photos as c on d.product_id=c.product_id where d.customer_id='" + Session["customer_id"].ToString() + "'");
         rptbinddata.DataBind();
     }
 
     protected void rptbinddata_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
+
+
         RepeaterItem item = e.Item;
         TextBox changeqty = item.FindControl("changeqty") as TextBox;
         Label total = item.FindControl("total") as Label;
@@ -115,8 +117,32 @@ public partial class cart : System.Web.UI.Page
 
         if (e.CommandName == "Remove")
         {
-            string product_id = Convert.ToString(e.CommandArgument);
-            wb.removetocart(Session["customer_id"].ToString(), "", product_id, get_price_id(product_id));
+            string cart_id = Convert.ToString(e.CommandArgument);
+
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                string query = "DELETE FROM ecommerce_cart WHERE id = @id AND customer_id = @customer_id";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@id", cart_id);
+                    cmd.Parameters.AddWithValue("@customer_id", Session["customer_id"].ToString());
+
+                    con.Open();
+
+                    int rows = cmd.ExecuteNonQuery();
+
+                    if (rows > 0)
+                    {
+                        // Response.Write("<script>alert('Deleted from database');</script>");
+                    }
+                    else
+                    {
+                        Response.Write("<script>alert('Database me koi row delete nahi hui');</script>");
+                    }
+                }
+            }
+
             Response.Write("<script>alert('Product remove from cart.');</script>");
             BindData();
         }
@@ -125,7 +151,7 @@ public partial class cart : System.Web.UI.Page
         {
             string product_id = Convert.ToString(e.CommandArgument);
             string price_id = get_price_id(product_id);
-            string qty = get_cart_qty(Session["customer_id"].ToString(),product_id);
+            string qty = get_cart_qty(Session["customer_id"].ToString(), product_id);
             int cq = Convert.ToInt32(qty);
 
             if (cq > 1)
@@ -143,13 +169,13 @@ public partial class cart : System.Web.UI.Page
             {
                 wb.removetocart(Session["customer_id"].ToString(), "", product_id, price_id);
             }
-            
-            
+
+
         }
 
         if (e.CommandName == "Add")
         {
-            
+
             string product_id = Convert.ToString(e.CommandArgument);
             string price_id = get_price_id(product_id);
             string qty = get_cart_qty(Session["customer_id"].ToString(), product_id);
@@ -218,7 +244,7 @@ public partial class cart : System.Web.UI.Page
             {
                 SqlCommand cmd = new SqlCommand();
                 #region SQl select command
-                cmd.CommandText = @"SELECT cart_qty as carttotal from ecommerce_cart where customer_id='" + customer_id + "' and product_id='"+ product_id + "'";
+                cmd.CommandText = @"SELECT cart_qty as carttotal from ecommerce_cart where customer_id='" + customer_id + "' and product_id='" + product_id + "'";
                 #endregion 
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = con;

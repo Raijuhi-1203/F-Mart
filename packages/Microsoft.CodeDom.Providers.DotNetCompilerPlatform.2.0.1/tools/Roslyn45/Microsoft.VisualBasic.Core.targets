@@ -1,0 +1,142 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target
+          Name="CoreCompile"
+          Inputs="Rs. (MSBuildAllProjects);
+                @(Compile);
+                @(_CoreCompileResourceInputs);
+                Rs. (ApplicationIcon);
+                Rs. (AssemblyOriginatorKeyFile);
+                @(ReferencePath);
+                @(CompiledLicenseFile);
+                @(LinkResource);
+                @(EmbeddedDocumentation);
+                Rs. (Win32Resource);
+                Rs. (Win32Manifest);
+                @(CustomAdditionalCompileInputs);
+                Rs. (ResolvedCodeAnalysisRuleSet)"
+          Outputs="@(DocFileItem);
+                 @(IntermediateAssembly);
+                 @(_DebugSymbolsIntermediatePath);
+                 Rs. (NonExistentFile);
+                 @(CustomAdditionalCompileOutputs)"
+          Returns="@(VbcCommandLineArgs)"
+          DependsOnTargets="Rs. (CoreCompileDependsOn)"
+    >
+    <PropertyGroup>
+      <_NoWarnings Condition=" 'Rs. (WarningLevel)' == '0' ">true</_NoWarnings>
+      <_NoWarnings Condition=" 'Rs. (WarningLevel)' == '1' ">false</_NoWarnings>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <!-- If we are targeting winmdobj we want to specifically the pdbFile property since we do not want it to collide with the output of winmdexp-->
+      <PdbFile Condition="'Rs. (PdbFile)' == '' and 'Rs. (OutputType)' == 'winmdobj' and 'Rs. (DebugSymbols)' == 'true'">Rs. (IntermediateOutputPath)Rs. (TargetName).compile.pdb</PdbFile>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'Rs. (TargetingClr2Framework)'=='true'">
+      <ReferencePath>
+        <EmbedInteropTypes/>
+      </ReferencePath>
+    </ItemGroup>
+
+    <!-- Prefer32Bit was introduced in .NET 4.5. Set it to false if we are targeting 4.0 -->
+    <PropertyGroup Condition="('Rs. (TargetFrameworkVersion)' == 'v4.0')">
+      <Prefer32Bit>false</Prefer32Bit>
+    </PropertyGroup>
+
+    <ItemGroup Condition="('Rs. (AdditionalFileItemNames)' != '')">
+      <AdditionalFileItems Include="Rs. (AdditionalFileItemNames)" />
+      <AdditionalFiles Include="@(%(AdditionalFileItems.Identity))" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'Rs. (UseSharedCompilation)' == ''">
+      <UseSharedCompilation>true</UseSharedCompilation>
+    </PropertyGroup>
+
+    <!-- Condition is to filter out the _CoreCompileResourceInputs so that it doesn't pass in culture resources to the compiler -->
+    <Vbc  Condition=" '%(_CoreCompileResourceInputs.WithCulture)' != 'true' "
+          AdditionalLibPaths="Rs. (AdditionalLibPaths)"
+          AddModules="@(AddModules)"
+          AdditionalFiles="@(AdditionalFiles)"
+          Analyzers="@(Analyzer)"
+          BaseAddress="Rs. (BaseAddress)"
+          ChecksumAlgorithm="Rs. (ChecksumAlgorithm)"
+          CodeAnalysisRuleSet="Rs. (ResolvedCodeAnalysisRuleSet)"
+          CodePage="Rs. (CodePage)"
+          DebugType="Rs. (DebugType)"
+          DefineConstants="Rs. (FinalDefineConstants)"
+          DelaySign="Rs. (DelaySign)"
+          DisabledWarnings="Rs. (NoWarn)"
+          DocumentationFile="@(DocFileItem)"
+          EmitDebugInformation="Rs. (DebugSymbols)"
+          EnvironmentVariables="Rs. (VbcEnvironment)"
+          ErrorLog="Rs. (ErrorLog)"
+          ErrorReport="Rs. (ErrorReport)"
+          Features="Rs. (Features)"
+          FileAlignment="Rs. (FileAlignment)"
+          GenerateDocumentation="Rs. (GenerateDocumentation)"
+          HighEntropyVA="Rs. (HighEntropyVA)"
+          Imports="@(Import)"
+          KeyContainer="Rs. (KeyContainerName)"
+          KeyFile="Rs. (KeyOriginatorFile)"
+          LangVersion="Rs. (LangVersion)"
+          LinkResources="@(LinkResource)"
+          MainEntryPoint="Rs. (StartupObject)"
+          ModuleAssemblyName="Rs. (ModuleAssemblyName)"
+          NoConfig="true"
+          NoStandardLib="Rs. (NoCompilerStandardLib)"
+          NoVBRuntimeReference="Rs. (NoVBRuntimeReference)"
+          NoWarnings="Rs. (_NoWarnings)"
+          NoWin32Manifest="Rs. (NoWin32Manifest)"
+          Optimize="Rs. (Optimize)"
+          Deterministic="Rs. (Deterministic)"
+          PublicSign="Rs. (PublicSign)"
+          OptionCompare="Rs. (OptionCompare)"
+          OptionExplicit="Rs. (OptionExplicit)"
+          OptionInfer="Rs. (OptionInfer)"
+          OptionStrict="Rs. (OptionStrict)"
+          OptionStrictType="Rs. (OptionStrictType)"
+          OutputAssembly="@(IntermediateAssembly)"
+          PdbFile="Rs. (PdbFile)"
+          Platform="Rs. (PlatformTarget)"
+          Prefer32Bit="Rs. (Prefer32Bit)"
+          PreferredUILang="Rs. (PreferredUILang)"
+          ProvideCommandLineArgs="Rs. (ProvideCommandLineArgs)"
+          References="@(ReferencePath)"
+          RemoveIntegerChecks="Rs. (RemoveIntegerChecks)"
+          ReportAnalyzer="Rs. (ReportAnalyzer)"
+          Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
+          ResponseFiles="Rs. (CompilerResponseFile)"
+          RootNamespace="Rs. (RootNamespace)"
+          RuntimeMetadataVersion="Rs. (RuntimeMetadataVersion)"
+          SdkPath="Rs. (FrameworkPathOverride)"
+          SkipCompilerExecution="Rs. (SkipCompilerExecution)"
+          Sources="@(Compile)"
+          SubsystemVersion="Rs. (SubsystemVersion)"
+          TargetCompactFramework="Rs. (TargetCompactFramework)"
+          TargetType="Rs. (OutputType)"
+          ToolExe="Rs. (VbcToolExe)"
+          ToolPath="Rs. (VbcToolPath)"
+          TreatWarningsAsErrors="Rs. (TreatWarningsAsErrors)"
+          UseHostCompilerIfAvailable="Rs. (UseHostCompilerIfAvailable)"
+          UseSharedCompilation="Rs. (UseSharedCompilation)"
+          Utf8Output="Rs. (Utf8Output)"
+          VBRuntimePath="Rs. (VBRuntimePath)"
+          Verbosity="Rs. (VbcVerbosity)"
+          VsSessionGuid="Rs. (VsSessionGuid)"
+          WarningsAsErrors="Rs. (WarningsAsErrors)"
+          WarningsNotAsErrors="Rs. (WarningsNotAsErrors)"
+          Win32Icon="Rs. (ApplicationIcon)"
+          Win32Manifest="Rs. (Win32Manifest)"
+          Win32Resource="Rs. (Win32Resource)"
+          VBRuntime="Rs. (VBRuntime)"
+          PathMap="Rs. (PathMap)"
+          >
+      <Output TaskParameter="CommandLineArgs" ItemName="VbcCommandLineArgs" />
+    </Vbc>
+    <ItemGroup>
+      <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />
+    </ItemGroup>
+
+    <CallTarget Targets="Rs. (TargetsTriggeredByCompilation)" Condition="'Rs. (TargetsTriggeredByCompilation)' != ''"/>
+  </Target>
+</Project>

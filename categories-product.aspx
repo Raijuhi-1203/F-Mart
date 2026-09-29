@@ -13,31 +13,53 @@
                     <ItemTemplate>
 
                         <!-- Product 1 -->
-                        <div class="col-lg-3 col-md-6">
+                        <div class="col-6 col-lg-3 col-md-6">
                             <div class="product-item">
                                 <div class="product-image">
-                                    <div class="product-badge"><%# Eval("product_discount_percentage") %> % OFF</div>
-                                    <img src='auth/<%# Eval("photo_path") %>' alt="Product" class="img-fluid" loading="lazy">
-                                    <div class="product-actions">
-                                        <asp:Button class="action-btn wishlist-btn" ID="btnwishlist" runat="server" Text="♥" CommandName="Wishlist" CommandArgument='<%# Eval("product_id") %>'></asp:Button>
-                                    </div>
-                                    <asp:Button class="cart-btn" ID="btncart" runat="server" CommandName="AddCart" CommandArgument='<%# Eval("product_id") %>' Text="Add to Cart"></asp:Button>
-                                </div>
-                                <div class="product-info">
-                                    <div class="product-category">Premium Collection</div>
-                                    <h4 class="product-name"><a href="product-details.aspx?ref=<%# Eval("product_id") %>"><%# Eval("product_full_name") %></a></h4>
-                                    <div class="product-rating">
-                                        <div class="stars">
-                                            <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star"></i>
-                                        </div>
-                                        <%--<span class="rating-count">(24)</span>--%>
-                                    </div>
-                                    <div class="product-price">Rs. <%# Eval("product_market_price") %></div>
+                                    <a href='product-details.aspx?ref=<%# Eval("product_id") %>' class="product-img-link" title='<%# Eval("product_full_name") %>'>
+                                        <img src='auth/<%# Eval("photo_path") %>' alt='<%# Eval("product_full_name") %>' class="img-fluid" loading="lazy"></a>
 
+                                    <!-- Rating Pill Badge (Bottom-Left like Flipkart) -->
+                                    <div class="rating-pill">
+                                        <span class="rating-score">4.6</span>
+                                        <span class="rating-star">&#9733;</span>
+                                        <span class="rating-count">(2,450)</span>
+                                    </div>
+
+                                    <!-- Wishlist Floating Button -->
+                                    <div class="product-actions">
+                                        <asp:LinkButton class="action-btn wishlist-btn" ID="btnwishlist"
+                                            runat="server" CommandName="Wishlist"
+                                            CommandArgument='<%# Eval("product_id") %>' ToolTip="Add to Wishlist">
+                                             <i class="bi bi-heart"></i>
+                                        </asp:LinkButton>
+                                    </div>
+
+                                    <!-- Add to Cart Floating Button -->
+                                    <asp:Button class="cart-btn" ID="btncart" runat="server" CommandName="AddCart"
+                                        CommandArgument='<%# Eval("product_id") %>' Text="Add to Cart"></asp:Button>
+                                </div>
+
+                                <div class="product-info">
+                                    <asp:Label ID="price_id" runat="server" Text='<%# Eval("product_id") %>' hidden>
+                                    </asp:Label>
+
+                                    <h4 class="product-name">
+                                        <a href='product-details.aspx?ref=<%# Eval("product_id") %>' title='<%# Eval("product_full_name") %>'>
+                                            <%# Eval("product_full_name") %>
+                                        </a>
+                                    </h4>
+
+                                    <div class="product-price">
+                                        <%# Convert.ToString(Eval("product_market_price")) != "" && Convert.ToString(Eval("product_market_price")) != Convert.ToString(Eval("product_sell_price"))
+                                            ? "<span class=\"original-price\">&#8377;" + Eval("product_market_price") + "</span>" 
+                                            : "" %>
+                                        <span class="sale-price">&#8377;<%# Eval("product_sell_price") %></span>
+                                    </div>
+
+                                    <div class="bank-offer">
+                                        &#8377;<%# Eval("product_sell_price") %> with Bank offer
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -1,0 +1,968 @@
+/*--------------------------------------------------------------
+# F-Mart Ecommerce Product Listing & Search Results Styling
+# Theme: Modern, Clean, Professional Furniture Retail
+--------------------------------------------------------------*/
+
+:root {
+  --fmart-primary: #0097b2;
+  --fmart-primary-hover: #007d94;
+  --fmart-primary-light: #e6f6f9;
+  --fmart-primary-focus: rgba(0, 151, 178, 0.2);
+  --fmart-dark: #111827;
+  --fmart-body: #4b5563;
+  --fmart-muted: #6b7280;
+  --fmart-border: #e5e7eb;
+  --fmart-border-light: #f3f4f6;
+  --fmart-card-bg: #ffffff;
+  --fmart-img-bg: #f8fafc;
+  --fmart-discount-bg: #fee2e2;
+  --fmart-discount-text: #dc2626;
+  --fmart-star: #f59e0b;
+  --fmart-radius-sm: 8px;
+  --fmart-radius-md: 12px;
+  --fmart-radius-lg: 16px;
+  --fmart-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --fmart-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --fmart-shadow-hover: 0 12px 24px -6px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 151, 178, 0.15);
+  --fmart-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==============================================================
+   1. Listing Hero & Breadcrumbs
+   ============================================================== */
+.fmart-listing-hero {
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border-bottom: 1px solid var(--fmart-border);
+  padding: 1.25rem 0 1.5rem 0;
+}
+
+.fmart-breadcrumbs .breadcrumb {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.fmart-breadcrumbs .breadcrumb-item a {
+  color: var(--fmart-muted);
+  text-decoration: none;
+  transition: var(--fmart-transition);
+}
+
+.fmart-breadcrumbs .breadcrumb-item a:hover {
+  color: var(--fmart-primary);
+}
+
+.fmart-breadcrumbs .breadcrumb-item.active {
+  color: var(--fmart-dark);
+  font-weight: 500;
+}
+
+.fmart-breadcrumbs .breadcrumb-item + .breadcrumb-item::before {
+  color: #9ca3af;
+  content: "/";
+  padding: 0 0.5rem;
+}
+
+.fmart-listing-title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--fmart-dark);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.2rem;
+  font-family: var(--heading-font, "Montserrat", sans-serif);
+}
+
+.fmart-listing-subtitle {
+  font-size: 0.9rem;
+  color: var(--fmart-muted);
+  margin-bottom: 0;
+}
+
+.fmart-trust-badge {
+  background: #ffffff;
+  border: 1px solid var(--fmart-border);
+  border-radius: 9999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--fmart-dark);
+  box-shadow: var(--fmart-shadow-sm);
+}
+
+/* ==============================================================
+   2. Results Summary & Control Bar
+   ============================================================== */
+.fmart-results-section {
+  padding: 1.75rem 0 3.5rem 0;
+  background-color: #ffffff;
+  min-height: 500px;
+}
+
+.fmart-toolbar-card {
+  background: #ffffff;
+  border: 1px solid var(--fmart-border);
+  border-radius: var(--fmart-radius-md);
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--fmart-shadow-sm);
+}
+
+.fmart-summary-text {
+  font-size: 0.92rem;
+  color: var(--fmart-body);
+  margin: 0;
+}
+
+.fmart-query-tag {
+  background: var(--fmart-primary-light);
+  color: var(--fmart-primary);
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  margin-left: 0.25rem;
+  display: inline-block;
+}
+
+.fmart-count-badge {
+  font-weight: 600;
+  color: var(--fmart-dark);
+}
+
+.fmart-filter-trigger-btn {
+  background: #ffffff;
+  border: 1px solid var(--fmart-border);
+  color: var(--fmart-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--fmart-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: var(--fmart-transition);
+}
+
+.fmart-filter-trigger-btn:hover {
+  background: var(--fmart-img-bg);
+  border-color: #cbd5e1;
+  color: var(--fmart-primary);
+}
+
+.fmart-sort-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fmart-sort-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--fmart-muted);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.fmart-sort-select {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--fmart-dark);
+  border: 1px solid var(--fmart-border);
+  border-radius: var(--fmart-radius-sm);
+  padding: 0.42rem 2.2rem 0.42rem 0.85rem;
+  min-width: 175px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: var(--fmart-transition);
+}
+
+.fmart-sort-select:focus {
+  border-color: var(--fmart-primary);
+  box-shadow: 0 0 0 3px var(--fmart-primary-focus);
+  outline: none;
+}
+
+/* ==============================================================
+   3. Quick Filter Chips Bar
+   ============================================================== */
+.fmart-chips-scroll {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 0 1.25rem 0;
+  margin-bottom: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.fmart-chips-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.fmart-chips-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.fmart-chip {
+  background: #ffffff;
+  border: 1px solid var(--fmart-border);
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--fmart-body);
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: var(--fmart-transition);
+  user-select: none;
+}
+
+.fmart-chip:hover {
+  background: var(--fmart-img-bg);
+  border-color: #cbd5e1;
+  color: var(--fmart-dark);
+}
+
+.fmart-chip.active {
+  background: var(--fmart-primary);
+  border-color: var(--fmart-primary);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 151, 178, 0.28);
+}
+
+.fmart-chip.clear-chip {
+  border-color: #fca5a5;
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.fmart-chip.clear-chip:hover {
+  background-color: #fee2e2;
+  border-color: #f87171;
+}
+
+/* ==============================================================
+   4. Responsive Product Grid (4 desktop, 2 tablet, 1 mobile)
+   ============================================================== */
+.fmart-products-grid {
+  margin-left: -0.65rem;
+  margin-right: -0.65rem;
+}
+
+.fmart-product-col {
+  padding-left: 0.65rem;
+  padding-right: 0.65rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+}
+
+/* ==============================================================
+   5. Modern Product Card
+   ============================================================== */
+.fmart-product-card {
+  background: var(--fmart-card-bg);
+  border: 1px solid var(--fmart-border);
+  border-radius: var(--fmart-radius-md);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  transition: var(--fmart-transition);
+  box-shadow: var(--fmart-shadow-sm);
+}
+
+.fmart-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--fmart-shadow-hover);
+  border-color: rgba(0, 151, 178, 0.4);
+}
+
+/* Image / Media Container */
+.fmart-card-media {
+  position: relative;
+  background: var(--fmart-img-bg);
+  width: 100%;
+  aspect-ratio: 1 / 1.05;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--fmart-border-light);
+}
+
+.fmart-media-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  text-decoration: none;
+}
+
+.fmart-card-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+
+.fmart-product-card:hover .fmart-card-img {
+  transform: scale(1.06);
+}
+
+.fmart-card-img.img-fallback {
+  opacity: 0.6;
+  max-width: 60%;
+  max-height: 60%;
+}
+
+/* Discount Badge */
+.fmart-discount-pill {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.22rem 0.55rem;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+  line-height: 1.2;
+}
+
+/* Floating Wishlist Button */
+.fmart-wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--fmart-transition);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 0;
+}
+
+.fmart-wishlist-btn i {
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.fmart-wishlist-btn:hover {
+  background: #ffffff;
+  color: #ef4444;
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+}
+
+.fmart-wishlist-btn.active {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.fmart-wishlist-btn.active i {
+  transform: scale(1.15);
+}
+
+/* Media bottom badge (Flipkart-style delivery / stock) */
+.fmart-media-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(4px);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #047857;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Product Card Body */
+.fmart-card-body {
+  padding: 1rem 1.1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.fmart-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  gap: 0.5rem;
+}
+
+.fmart-brand-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fmart-muted);
+}
+
+.fmart-rating-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+}
+
+.fmart-rating-score {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #15803d;
+  line-height: 1;
+}
+
+.fmart-rating-star {
+  font-size: 0.7rem;
+  color: #16a34a;
+}
+
+.fmart-rating-count {
+  font-size: 0.7rem;
+  color: var(--fmart-muted);
+}
+
+/* Product Title */
+.fmart-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 0.5rem 0;
+  font-family: var(--heading-font, "Montserrat", sans-serif);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.7em;
+}
+
+.fmart-card-title a {
+  color: var(--fmart-dark);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.fmart-card-title a:hover {
+  color: var(--fmart-primary);
+}
+
+/* Feature bullets */
+.fmart-card-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.73rem;
+  color: var(--fmart-muted);
+}
+
+.fmart-feature-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+/* Price Box */
+.fmart-price-box {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--fmart-border);
+  margin-bottom: 0.85rem;
+}
+
+.fmart-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.fmart-price-symbol {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--fmart-dark);
+}
+
+.fmart-price-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--fmart-dark);
+  letter-spacing: -0.02em;
+}
+
+.fmart-tax-info {
+  display: block;
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin-top: 0.1rem;
+}
+
+/* Action Button */
+.fmart-btn-cart {
+  width: 100%;
+  background: var(--fmart-primary);
+  border: 1px solid var(--fmart-primary);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: var(--fmart-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  transition: var(--fmart-transition);
+  box-shadow: 0 2px 6px rgba(0, 151, 178, 0.25);
+}
+
+.fmart-btn-cart:hover {
+  background: var(--fmart-primary-hover);
+  border-color: var(--fmart-primary-hover);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 151, 178, 0.35);
+}
+
+/* ==============================================================
+   6. Clean Empty Results Design (Inside NoDataPanel)
+   ============================================================== */
+.fmart-empty-state-card {
+  background: #ffffff;
+  border: 1px solid var(--fmart-border);
+  border-radius: var(--fmart-radius-lg);
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+  max-width: 680px;
+  margin: 1.5rem auto 2.5rem auto;
+  box-shadow: var(--fmart-shadow-md);
+}
+
+.fmart-empty-icon-circle {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--fmart-primary-light);
+  color: var(--fmart-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 151, 178, 0.15);
+}
+
+.fmart-empty-heading {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--fmart-dark);
+  margin-bottom: 0.6rem;
+  font-family: var(--heading-font, "Montserrat", sans-serif);
+}
+
+.fmart-empty-message {
+  font-size: 0.95rem;
+  color: var(--fmart-body);
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.fmart-suggested-searches {
+  background: var(--fmart-img-bg);
+  border-radius: var(--fmart-radius-md);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.fmart-suggest-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--fmart-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.6rem;
+}
+
+.fmart-suggestion-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.fmart-suggestion-pill {
+  background: #ffffff;
+  border: 1px solid var(--fmart-border);
+  color: var(--fmart-dark);
+  border-radius: 9999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--fmart-transition);
+}
+
+.fmart-suggestion-pill:hover {
+  background: var(--fmart-primary);
+  border-color: var(--fmart-primary);
+  color: #ffffff;
+}
+
+.fmart-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.fmart-btn-primary-action {
+  background: var(--fmart-primary);
+  border: 1px solid var(--fmart-primary);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--fmart-radius-sm);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: var(--fmart-transition);
+}
+
+.fmart-btn-primary-action:hover {
+  background: var(--fmart-primary-hover);
+  border-color: var(--fmart-primary-hover);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 151, 178, 0.25);
+}
+
+.fmart-btn-secondary-action {
+  background: #ffffff;
+  border: 1px solid var(--fmart-border);
+  color: var(--fmart-dark);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--fmart-radius-sm);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: var(--fmart-transition);
+}
+
+.fmart-btn-secondary-action:hover {
+  background: var(--fmart-img-bg);
+  border-color: #cbd5e1;
+  color: var(--fmart-primary);
+}
+
+/* ==============================================================
+   7. Filter Sidebar (Offcanvas Component)
+   ============================================================== */
+.fmart-offcanvas {
+  max-width: 340px;
+  border-right: 1px solid var(--fmart-border);
+}
+
+.fmart-offcanvas-header {
+  border-bottom: 1px solid var(--fmart-border);
+  padding: 1.15rem 1.25rem;
+}
+
+.fmart-offcanvas-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--fmart-dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fmart-filter-group {
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--fmart-border-light);
+}
+
+.fmart-filter-group:last-child {
+  border-bottom: none;
+}
+
+.fmart-filter-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fmart-dark);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fmart-filter-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.55rem;
+  font-size: 0.86rem;
+  color: var(--fmart-body);
+  cursor: pointer;
+}
+
+.fmart-filter-option:last-child {
+  margin-bottom: 0;
+}
+
+.fmart-filter-option input[type="checkbox"],
+.fmart-filter-option input[type="radio"] {
+  cursor: pointer;
+  accent-color: var(--fmart-primary);
+}
+
+.fmart-filter-option span.badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  background-color: var(--fmart-border-light);
+  color: var(--fmart-muted);
+}
+
+.fmart-price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fmart-price-input {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--fmart-border);
+  border-radius: var(--fmart-radius-sm);
+  width: 100%;
+}
+
+.fmart-offcanvas-footer {
+  border-top: 1px solid var(--fmart-border);
+  padding: 1rem 1.25rem;
+  background: var(--fmart-img-bg);
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ==============================================================
+   8. Static Pagination UI
+   ============================================================== */
+.fmart-pagination-container {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--fmart-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fmart-pagination-info {
+  font-size: 0.85rem;
+  color: var(--fmart-muted);
+}
+
+.fmart-pagination-nav .pagination {
+  margin: 0;
+  gap: 0.3rem;
+}
+
+.fmart-pagination-nav .page-link {
+  color: var(--fmart-dark);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid var(--fmart-border);
+  border-radius: var(--fmart-radius-sm) !important;
+  padding: 0.4rem 0.8rem;
+  background: #ffffff;
+  transition: var(--fmart-transition);
+}
+
+.fmart-pagination-nav .page-link:hover {
+  background: var(--fmart-img-bg);
+  border-color: #cbd5e1;
+  color: var(--fmart-primary);
+}
+
+.fmart-pagination-nav .page-item.active .page-link {
+  background: var(--fmart-primary);
+  border-color: var(--fmart-primary);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 151, 178, 0.28);
+}
+
+.fmart-pagination-nav .page-item.disabled .page-link {
+  color: #9ca3af;
+  background-color: var(--fmart-border-light);
+  border-color: var(--fmart-border);
+  cursor: not-allowed;
+}
+
+/* Toast feedback for wishlist */
+.fmart-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1080;
+  background: #111827;
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--fmart-radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.fmart-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ==============================================================
+   9. Mobile & Tablet Responsiveness
+   ============================================================== */
+@media (max-width: 991.98px) {
+  .fmart-listing-title {
+    font-size: 1.4rem;
+  }
+
+  .fmart-toolbar-card {
+    padding: 0.75rem 0.9rem;
+  }
+
+  .fmart-sort-select {
+    min-width: 140px;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .fmart-listing-hero {
+    padding: 1rem 0 1.15rem 0;
+  }
+
+  .fmart-listing-title {
+    font-size: 1.25rem;
+  }
+
+  .fmart-trust-badge {
+    display: none !important;
+  }
+
+  .fmart-toolbar-card {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem;
+  }
+
+  .fmart-toolbar-controls {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .fmart-sort-select {
+    flex-grow: 1;
+  }
+
+  .fmart-card-media {
+    aspect-ratio: 1 / 1;
+  }
+
+  .fmart-card-body {
+    padding: 0.85rem;
+  }
+
+  .fmart-card-title {
+    font-size: 0.88rem;
+    height: 2.6em;
+  }
+
+  .fmart-price-value {
+    font-size: 1.1rem;
+  }
+
+  .fmart-btn-cart {
+    font-size: 0.8rem;
+    padding: 0.48rem 0.8rem;
+  }
+
+  .fmart-pagination-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .fmart-results-section {
+    padding-top: 1.25rem;
+  }
+
+  .fmart-empty-state-card {
+    padding: 2.25rem 1rem;
+  }
+
+  .fmart-empty-heading {
+    font-size: 1.2rem;
+  }
+
+  .fmart-empty-icon-circle {
+    width: 68px;
+    height: 68px;
+    font-size: 1.75rem;
+  }
+}

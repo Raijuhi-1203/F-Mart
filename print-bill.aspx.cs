@@ -23,6 +23,7 @@ public partial class print_bill : System.Web.UI.Page
     Master mst = new Master();
     protected void Page_Load(object sender, EventArgs e)
     {
+
         if (!IsPostBack)
         {
             BindData();

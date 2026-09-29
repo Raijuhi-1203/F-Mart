@@ -850,7 +850,7 @@ public class WebService : System.Web.Services.WebService
         {
             if (cart_guest_id == "")
             {
-                using (SqlCommand cmd = new SqlCommand("delete from ecommerce_cart where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
+                using (SqlCommand cmd = new SqlCommand("delete from ecommerce_cart where customer_id='" + customer_id + "' and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
                 {
                     cmd.Connection = con;
                     con.Open();
@@ -862,7 +862,7 @@ public class WebService : System.Web.Services.WebService
             }
             else if (cart_guest_id != "")
             {
-                using (SqlCommand cmd = new SqlCommand("delete from ecommerce_cart where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
+                using (SqlCommand cmd = new SqlCommand("delete from ecommerce_cart where customer_id='" + customer_id + "' and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
                 {
                     cmd.Connection = con;
                     con.Open();
@@ -1054,7 +1054,7 @@ public class WebService : System.Web.Services.WebService
 
         using (SqlConnection con = new SqlConnection(cs))
         {
-            using (SqlCommand cmd = new SqlCommand("delete from ecommerce_cart where customer_id='" + customer_id + "' and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
+            using (SqlCommand cmd = new SqlCommand("delete from ecommerce_wishlist where customer_id='" + customer_id + "' and product_id='" + product_id + "'"))
             {
                 cmd.Connection = con;
                 con.Open();

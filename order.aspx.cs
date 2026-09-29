@@ -33,7 +33,7 @@ public partial class order : System.Web.UI.Page
 
     private void BindData()
     {
-        rptbinddata.DataSource = mst.GetData("SELECT top 1 *,(SELECT count(*) FROM ecommerce_order where customer_id='" + Session["customer_id"].ToString() + "') as total_item FROM ecommerce_order where customer_id='" + Session["customer_id"].ToString() + "'");
+        rptbinddata.DataSource = mst.GetData("SELECT *,(SELECT count(*) FROM ecommerce_order where customer_id='" + Session["customer_id"].ToString() + "') as total_item FROM ecommerce_order where customer_id='" + Session["customer_id"].ToString() + "' ORDER BY id DESC");
         rptbinddata.DataBind();
 
         if (rptbinddata.Items.Count == 0)
@@ -46,7 +46,6 @@ public partial class order : System.Web.UI.Page
         }
 
     }
-
 
     protected void rptbinddata_ItemCommand(object source, RepeaterCommandEventArgs e)
     {

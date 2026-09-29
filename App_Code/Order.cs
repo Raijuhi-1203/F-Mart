@@ -1927,7 +1927,7 @@ public class Order
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = con;
-            cmd.CommandText = "SELECT order_section from [ecom_arshit_food].[ecommerce_order] where order_id='"+orderno+"'";
+            cmd.CommandText = "SELECT order_section from [ecommerce_order] where order_id='"+orderno+"'";
             cmd.CommandType = CommandType.Text;
             order_section = Convert.ToString(cmd.ExecuteScalar());
             con.Close();
