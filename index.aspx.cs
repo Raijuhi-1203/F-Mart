@@ -31,33 +31,33 @@ public partial class index : System.Web.UI.Page
             BindData3();
             BindData4();
             BindCategories();
-                         
+
         }
     }
 
     private void BindData()
     {
-        rptbinddata.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id");
+        rptbinddata.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id WHERE a.publish_status = 'yes'");
         rptbinddata.DataBind();
     }
     private void BindData1()
     {
-        Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id");
+        Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id WHERE a.publish_status = 'yes'");
         Repeater1.DataBind();
     }
     private void BindData2()
     {
-        Repeater2.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id");
+        Repeater2.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id WHERE a.publish_status = 'yes'");
         Repeater2.DataBind();
     }
     private void BindData3()
     {
-        Repeater3.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id");
+        Repeater3.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id WHERE a.publish_status = 'yes'");
         Repeater3.DataBind();
     }
     private void BindData4()
     {
-        Repeater4.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id");
+        Repeater4.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id WHERE a.publish_status = 'yes'");
         Repeater4.DataBind();
     }
 
@@ -93,7 +93,7 @@ public partial class index : System.Web.UI.Page
         {
             SqlCommand cmd = new SqlCommand();
             #region SQl select command
-            cmd.CommandText = @"SELECT id FROM ecommerce_product_price where product_id='"+ product_id + "'";
+            cmd.CommandText = @"SELECT id FROM ecommerce_product_price where product_id='" + product_id + "'";
             #endregion
             cmd.CommandType = CommandType.Text;
             cmd.Connection = con;

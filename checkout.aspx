@@ -3,6 +3,19 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
+    <asp:HiddenField ID="hfPaymentId" runat="server" />
+    <asp:HiddenField ID="hfOrderId" runat="server" />
+    <asp:HiddenField ID="hfSignature" runat="server" />
+
+    <asp:Button
+        ID="btnPaymentSuccess"
+        runat="server"
+        Text="Payment Success"
+        OnClick="btnPaymentSuccess_Click1"
+        CausesValidation="false"
+        UseSubmitBehavior="true"
+        Style="display: none;" />
+
     <!-- Page Title -->
     <div class="page-title light-background">
         <div class="container d-lg-flex justify-content-between align-items-center">
@@ -89,7 +102,7 @@
 
                                 </div>
                             </div>
-                            
+
                             <!-- Order Review -->
                             <div class="checkout-section" id="order-review">
                                 <div class="section-header">
@@ -141,7 +154,7 @@
                                                 <%--<p class="order-item-variant">Color: Black | Size: M</p>--%>
                                                 <div class="order-item-price">
                                                     <span class="quantity"><%# Eval("cart_qty") %> x </span>
-                                                    <span class="price">Rs. <%# Eval("product_market_price") %></span>
+                                                    <span class="price">Rs. <%# Eval("product_sell_price") %></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -166,10 +179,10 @@
                                     <span>Shipping</span>
                                     <span>Rs. 100.00</span>
                                 </div>
-                                <%-- <div class="order-tax d-flex justify-content-between">
-                    <span>Tax</span>
-                    <span>$21.00</span>
-                  </div>--%>
+                                <div class="order-tax d-flex justify-content-between">
+                                    <span>Tax</span>
+                                    <span runat="server" id="gstin">Rs. 21.00</span>
+                                </div>
                                 <div class="order-total d-flex justify-content-between">
                                     <span>Total</span>
                                     <span runat="server" id="totalamt">Rs. 240.96</span>
@@ -193,12 +206,65 @@
                 </div>
             </div>
 
-            
+
 
         </div>
 
     </section>
     <!-- /Checkout Section -->
 
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        function OpenPaymentWindow(key, amount, currency, name,
+            description, imageLogo, orderId, profileName,
+            profileEmail, profileMobile) {
+
+            var options = {
+                key: key,
+                amount: amount,
+                currency: currency,
+                name: name,
+                description: description,
+                image: imageLogo,
+                order_id: orderId,
+
+                prefill: {
+                    name: profileName,
+                    email: profileEmail,
+                    contact: profileMobile
+                },
+
+                handler: function (response) {
+                    document.getElementById(
+        '<%= hfPaymentId.ClientID %>'
+                    ).value = response.razorpay_payment_id || "";
+
+                    document.getElementById(
+        '<%= hfOrderId.ClientID %>'
+                    ).value = response.razorpay_order_id || "";
+
+                    document.getElementById(
+        '<%= hfSignature.ClientID %>'
+                    ).value = response.razorpay_signature || "";
+
+                    // Trigger the ASP.NET server-side click event
+                    __doPostBack(
+        '<%= btnPaymentSuccess.UniqueID %>',
+                        ''
+                    );
+                }
+            };
+
+            var rzp = new Razorpay(options);
+
+            rzp.on('payment.failed', function (response) {
+                console.error("Payment failed:", response.error);
+                alert("Payment failed. Please try again.");
+            });
+
+            rzp.open();
+        }
+    </script>
 
 </asp:Content>

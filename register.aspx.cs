@@ -40,13 +40,18 @@ public partial class register : System.Web.UI.Page
         }
     }
 
-
-
     protected void btnregister_ServerClick(object sender, EventArgs e)
     {
         string customer_id = getuserid();
-        if (email.Text.Length > 0 && password.Text.Length > 0 && fullName.Text.Length > 0)
+        if (email.Text.Length > 0 && password.Text.Length > 0 && fullName.Text.Length > 0 && confirmPassword.Text.Length > 0)
         {
+
+            if (password.Text != confirmPassword.Text)
+            {
+                ShowMessage("Password and Confirm Password do not match!", MessageType.Error);
+                return;
+            }
+
             con.Open();
             string get_query = "Select * from ecommerce_customer where customer_email='" + email.Text + "'";
             SqlCommand get_cmd = new SqlCommand(get_query, con);
@@ -54,7 +59,7 @@ public partial class register : System.Web.UI.Page
             if (get_data.Read())
             {
                 ShowMessage("Already have an account Please login!", MessageType.Error);
-                
+
             }
             else
             {
@@ -62,10 +67,10 @@ public partial class register : System.Web.UI.Page
                 con.Close();
 
                 con.Open();
-                string get_query1 = "insert into ecommerce_customer (customer_time,customer_date,customer_status,customer_id,customer_name,customer_email,customer_password) values ('"+DateTime.Now.ToString("HH:mm:ss")+ "','"+DateTime.Now.ToString("yyyy/MM/dd")+ "','Active','"+ customer_id + "','"+ fullName.Text + "','"+ email.Text +"','"+ Encrypted(password.Text) +"')";
+                string get_query1 = "insert into ecommerce_customer (customer_time,customer_date,customer_status,customer_id,customer_name,customer_email,customer_password) values ('" + DateTime.Now.ToString("HH:mm:ss") + "','" + DateTime.Now.ToString("yyyy/MM/dd") + "','Active','" + customer_id + "','" + fullName.Text + "','" + email.Text + "','" + Encrypted(password.Text) + "')";
                 SqlCommand get_cmd1 = new SqlCommand(get_query1, con);
                 SqlDataReader get_data1 = get_cmd1.ExecuteReader();
-                
+
                 get_data1.Close();
                 con.Close();
 
@@ -73,21 +78,38 @@ public partial class register : System.Web.UI.Page
                 string get_query2 = "select * from ecommerce_customer where customer_email='" + email.Text + "'";
                 SqlCommand get_cmd2 = new SqlCommand(get_query2, con);
                 SqlDataReader get_data2 = get_cmd2.ExecuteReader();
-                UserID = get_data2["customer_id"].ToString();
-                Name = get_data2["customer_name"].ToString();
-                Contactno = get_data2["customer_mobileno"].ToString();
-                Cemail = get_data2["customer_email"].ToString();
-                user_type = get_data2["customer_gender"].ToString();
-                string sessionId = HttpContext.Current.Session.SessionID;
-                Password = get_data2["customer_password"].ToString();
-                pincode = get_data2["customer_status"].ToString();
+
+                if (get_data2.Read())
+                {
+                    UserID = get_data2["customer_id"].ToString();
+                    Name = get_data2["customer_name"].ToString();
+                    Contactno = get_data2["customer_mobileno"] == DBNull.Value ? "" : get_data2["customer_mobileno"].ToString();
+
+                    Cemail = get_data2["customer_email"].ToString();
+
+                    user_type = get_data2["customer_gender"] == DBNull.Value ? "" : get_data2["customer_gender"].ToString();
+
+                    string sessionId = HttpContext.Current.Session.SessionID;
+
+                    Password = get_data2["customer_password"].ToString();
+                    pincode = get_data2["customer_status"].ToString();
+
+                    // abhi neeche wala login/session code yahin rahega
+                }
+                else
+                {
+                    ShowMessage("Registration successful, but customer data was not found.", MessageType.Error);
+                }
+
+                get_data2.Close();
+                con.Close();
 
                 if (Cemail == email.Text && Password == Encrypted(password.Text))
                 {
                     Session["customer_id"] = UserID;
                     Session["customer_name"] = Name;
                     Session["customer_mobileno"] = Contactno;
-                    Session["customer_email"] = email;
+                    Session["customer_email"] = Cemail;
                     Session["customer_gender"] = user_type;
                     Session["customer_status"] = pincode;
 
@@ -174,37 +196,32 @@ public partial class register : System.Web.UI.Page
     public string getuserid()
     {
         string id = "";
+
         try
         {
-
-
             using (SqlConnection con = new SqlConnection(cs))
             {
-                SqlCommand cmd = new SqlCommand();
-                #region SQl select command
-                cmd.CommandText = @"SELECT MAX(customer_temp_id) as customer_temp_id FROM ecommerce_customer";
-                #endregion
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = con;
-                con.Open();
-                SqlDataReader rdr = cmd.ExecuteReader();
-                int i = 1;
-                while (rdr.Read())
+                string query = @"SELECT ISNULL(MAX(customer_temp_id), 0) + 1 
+                             FROM ecommerce_customer";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    string tempidplus = rdr["customer_temp_id"].ToString();
-                    string tempid = Convert.ToString(Convert.ToInt32(tempidplus) + 1);
-                    id = DateTime.Now.Year + "0" + DateTime.Now.Month + Convert.ToString(tempid);
+                    con.Open();
+
+                    int tempid = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    id = DateTime.Now.Year.ToString()
+                         + DateTime.Now.Month.ToString("00")
+                         + tempid.ToString();
                 }
             }
-
         }
         catch (Exception ex)
         {
-            string text = "My text that I want to display";
-
+            throw new Exception("Customer ID generate error: " + ex.Message);
         }
+
         return id;
     }
-
 
 }

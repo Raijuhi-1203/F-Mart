@@ -907,7 +907,14 @@
                             <div class="summary-calc-row">
                                 <span class="row-label">Delivery Fee:</span>
                                 <span class="row-val text-success">
-                                    <input class="form-check-input d-none" type="radio" name="shipping" id="standard" checked="" />
+                                    <input class="form-check-input d-none" type="radio" name="shipping" id="standard" />
+                                    Rs. 100.00
+                                </span>
+                            </div>
+
+                            <div class="summary-calc-row">
+                                <span class="row-label">GST (18%):</span>
+                                <span class="row-val text-success" id="gst" runat="server">
                                     Rs. 100.00
                                 </span>
                             </div>

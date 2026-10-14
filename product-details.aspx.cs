@@ -36,14 +36,14 @@ public partial class product_details : System.Web.UI.Page
             {
                 category.InnerText = dr_get_data["product_parent_category_name"].ToString();
                 product_name.InnerText = dr_get_data["product_full_name"].ToString();
-                sell_price.InnerText = "Rs. "+dr_get_data["product_final_sell_price"].ToString();
+                sell_price.InnerText = "Rs. " + dr_get_data["product_final_sell_price"].ToString();
                 shop_price.InnerText = "Rs. " + dr_get_data["product_market_price"].ToString();
                 discount_price.InnerText = "Save Rs. " + dr_get_data["product_discount_price"].ToString();
-                discount_percentage.InnerText = "(" + dr_get_data["product_discount_percentage"].ToString()+ "% off)";
+                discount_percentage.InnerText = "(" + dr_get_data["product_discount_percentage"].ToString() + "% off)";
                 description.Text = dr_get_data["product_description"].ToString();
                 descp.Text = dr_get_data["product_description"].ToString();
-                product_img.ImageUrl = "auth/"+dr_get_data["photo_path"].ToString();
-                
+                product_img.ImageUrl = "auth/" + dr_get_data["photo_path"].ToString();
+
             }
             dr_get_data.Close();
         }
@@ -69,7 +69,7 @@ public partial class product_details : System.Web.UI.Page
                 (SELECT TOP 1 photo_path FROM ecommerce_product_photos WHERE product_id = a.product_id ORDER BY id ASC) as photo_path
             FROM ecommerce_product a
             OUTER APPLY (SELECT TOP 1 * FROM ecommerce_product_price WHERE product_id = a.product_id ORDER BY id ASC) b
-            WHERE a.product_id <> '" + currentProdId + @"'
+            WHERE a.product_id <> '" + currentProdId + @"'AND a.publish_status = 'yes'
             ORDER BY 
                 (CASE WHEN a.product_parent_category_id = (SELECT TOP 1 product_parent_category_id FROM ecommerce_product WHERE product_id = '" + currentProdId + @"') THEN 0 ELSE 1 END),
                 a.id DESC";
@@ -123,7 +123,7 @@ public partial class product_details : System.Web.UI.Page
 
     private void BindData()
     {
-        rptbinddata.DataSource = mst.GetData("select a.* from ecommerce_product_photos a where a.product_id='" + Request.QueryString[0] +"'");
+        rptbinddata.DataSource = mst.GetData("select a.* from ecommerce_product_photos a where a.product_id='" + Request.QueryString[0] + "'");
         rptbinddata.DataBind();
     }
 
@@ -138,10 +138,10 @@ public partial class product_details : System.Web.UI.Page
     {
         if (Session["customer_id"] != null)
         {
-            
+
             wb.addtocart("1", Session["customer_id"].ToString(), "", Request.QueryString[0], get_price_id(Request.QueryString[0]));
             Response.Write("<script>alert('Product added in cart.');</script>");
-            
+
         }
         else
         {
@@ -153,7 +153,7 @@ public partial class product_details : System.Web.UI.Page
     {
         if (Session["customer_id"] != null)
         {
-            
+
             wb.addtocart("1", Session["customer_id"].ToString(), "", Request.QueryString[0], get_price_id(Request.QueryString[0]));
             Response.Write("<script>alert('Product added in cart.');</script>");
             Response.Redirect("cart.aspx");
@@ -168,7 +168,7 @@ public partial class product_details : System.Web.UI.Page
     {
         if (Session["customer_id"] != null)
         {
-            
+
             wb.addtowishlist("1", Session["customer_id"].ToString(), Request.QueryString[0], get_price_id(Request.QueryString[0]));
             Response.Write("<script>alert('Product added in wishlist.');</script>");
         }
@@ -211,21 +211,21 @@ public partial class product_details : System.Web.UI.Page
             string qty = changeqty.Text;
             int cq = Convert.ToInt32(qty);
 
-        if (cq > 1)
-        {
-            cq--;
-            int a = cq;
-            changeqty.Text = a.ToString();
-            string mrpp = get_product_mrp(price_id);
-            double price = Convert.ToDouble(mrpp) * Convert.ToDouble(a);
-            sell_price.InnerText = "Rs. " + price.ToString();
-            wb.addtocart_changeqty(changeqty.Text, Session["customer_id"].ToString(), "", product_id, price_id);
-            
-        }
-        else if (cq == 1)
-        {
-            wb.removetocart(Session["customer_id"].ToString(), "", product_id, price_id);
-        }
+            if (cq > 1)
+            {
+                cq--;
+                int a = cq;
+                changeqty.Text = a.ToString();
+                string mrpp = get_product_mrp(price_id);
+                double price = Convert.ToDouble(mrpp) * Convert.ToDouble(a);
+                sell_price.InnerText = "Rs. " + price.ToString();
+                wb.addtocart_changeqty(changeqty.Text, Session["customer_id"].ToString(), "", product_id, price_id);
+
+            }
+            else if (cq == 1)
+            {
+                wb.removetocart(Session["customer_id"].ToString(), "", product_id, price_id);
+            }
         }
         else
         {
@@ -238,17 +238,17 @@ public partial class product_details : System.Web.UI.Page
         if (Session["customer_id"] != null)
         {
             string product_id = Convert.ToString(Request.QueryString[0]);
-        string price_id = get_price_id(product_id);
-        string qty = changeqty.Text;
-        int cq = Convert.ToInt32(qty);
-        cq++;
-        int a = cq;
-        changeqty.Text = a.ToString();
-        string mrpp = get_product_mrp(price_id);
-        double price = Convert.ToDouble(mrpp) * Convert.ToDouble(a);
-        sell_price.InnerText = "Rs. " + price.ToString();
-        wb.addtocart_changeqty(changeqty.Text, Session["customer_id"].ToString(), "", product_id, price_id);
-        
+            string price_id = get_price_id(product_id);
+            string qty = changeqty.Text;
+            int cq = Convert.ToInt32(qty);
+            cq++;
+            int a = cq;
+            changeqty.Text = a.ToString();
+            string mrpp = get_product_mrp(price_id);
+            double price = Convert.ToDouble(mrpp) * Convert.ToDouble(a);
+            sell_price.InnerText = "Rs. " + price.ToString();
+            wb.addtocart_changeqty(changeqty.Text, Session["customer_id"].ToString(), "", product_id, price_id);
+
         }
         else
         {

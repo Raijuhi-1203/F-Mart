@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -31,7 +32,7 @@ public partial class category : System.Web.UI.Page
             BindData2();
 
             string catid = Request.QueryString["catid"];
-            Response.Write("CATID = " + catid);
+            //   Response.Write("CATID = " + catid);
             if (!string.IsNullOrEmpty(catid))
             {
                 BindProducts(catid);
@@ -57,7 +58,7 @@ public partial class category : System.Web.UI.Page
         {
             Label catnm = (Label)rptbinddata.Items[e.Item.ItemIndex].FindControl("catnm");
 
-            Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where product_parent_category_id='"+ catnm.Text +"'");
+            Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where product_parent_category_id='" + catnm.Text + "'");
             Repeater1.DataBind();
 
             if (Repeater1.Items.Count == 0)
@@ -86,7 +87,7 @@ public partial class category : System.Web.UI.Page
             Response.Redirect("login.aspx");
         }
 
-       
+
 
     }
 
@@ -133,12 +134,12 @@ public partial class category : System.Web.UI.Page
 
     protected void Repeater1_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
-        
+
     }
 
     protected void rptbinddata_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
-        
+
     }
 
     protected void cat_Click(object sender, EventArgs e)
@@ -178,7 +179,7 @@ public partial class category : System.Web.UI.Page
 
     protected void priceRange_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if(priceRange.SelectedValue.ToString() == "10000 to 25000")
+        if (priceRange.SelectedValue.ToString() == "10000 to 25000")
         {
             Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where b.product_sell_price between '10000' and '25000'");
             Repeater1.DataBind();
@@ -220,9 +221,9 @@ public partial class category : System.Web.UI.Page
                 NoDataPanel.Visible = false;
             }
         }
-        
-        
-        
+
+
+
     }
 
     private string get_price_id(string product_id)

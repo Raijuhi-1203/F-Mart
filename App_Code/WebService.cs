@@ -18,21 +18,33 @@ public class WebService : System.Web.Services.WebService
 {
 
     string cs = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-    
+
     public WebService()
     {
 
     }
 
-     [WebMethod]
-    public String login(string PASSWORD, string mobileno)
+    [WebMethod]
+    public String login(string PASSWORD, string mobileno, string guest_id)
     {
-        
         string output = string.Empty;
         try
         {
             using (SqlConnection con = new SqlConnection(cs))
             {
+
+                SqlCommand cmd1 = new SqlCommand();
+                #region SQl select command
+                cmd1.CommandText = @"update ecommerce_customer set guest_id = '" + guest_id + "' where customer_mobileno = '" + mobileno + "'";
+                #endregion 
+                cmd1.CommandType = CommandType.Text;
+                cmd1.Connection = con;
+                con.Open();
+                SqlDataReader rdr1 = cmd1.ExecuteReader();
+                rdr1.Close();
+                con.Close();
+
+
                 SqlCommand cmd = new SqlCommand();
                 #region SQl select command
                 cmd.CommandText = @"SELECT * FROM  ecommerce_customer where customer_mobileno = '" + mobileno + "' and customer_password = '" + Encrypted(PASSWORD) + "' and customer_status='Active'";
@@ -43,6 +55,8 @@ public class WebService : System.Web.Services.WebService
                 SqlDataReader rdr = cmd.ExecuteReader();
                 DataTable dt = new DataTable();
                 dt.Load(rdr);
+
+
 
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 output = JsonConvert.SerializeObject(dt);
@@ -58,8 +72,8 @@ public class WebService : System.Web.Services.WebService
         return output;
     }
 
-	[WebMethod]
-    public string get_cart_qty(string cart_guest_id,string customer_id)
+    [WebMethod]
+    public string get_cart_qty(string cart_guest_id, string customer_id)
     {
         string output = string.Empty;
         try
@@ -68,7 +82,7 @@ public class WebService : System.Web.Services.WebService
             {
                 SqlCommand cmd = new SqlCommand();
                 #region SQl select command
-                cmd.CommandText = @"SELECT count(*) carttotal from ecommerce_cart where (customer_id='"+customer_id+"' or cart_guest_id='"+cart_guest_id+"')";
+                cmd.CommandText = @"SELECT count(*) carttotal from ecommerce_cart where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "')";
                 #endregion 
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = con;
@@ -86,9 +100,8 @@ public class WebService : System.Web.Services.WebService
 
         }
         return output;
-
     }
-	
+
     [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public String get_category()
@@ -140,7 +153,7 @@ public class WebService : System.Web.Services.WebService
             return strJSON;
         }
     }
-	
+
     [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public String get_TopSlider()
@@ -217,7 +230,7 @@ public class WebService : System.Web.Services.WebService
         }
     }
 
-	[WebMethod]
+    [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public String get_product_top(string customer_id, string cart_guest_id)
     {
@@ -242,8 +255,34 @@ public class WebService : System.Web.Services.WebService
             return strJSON;
         }
     }
-	
-	[WebMethod]
+
+    [WebMethod]
+    [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public String get_product_img(string product_id)
+    {
+
+
+        using (SqlConnection con = new SqlConnection(cs))
+        {
+            SqlCommand cmd = new SqlCommand();
+            #region SQl select command
+            cmd.CommandText = @"SELECT * from ecommerce_product_photos where product_id='" + product_id + "'";
+            #endregion
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = con;
+            con.Open();
+            SqlDataReader rdr = cmd.ExecuteReader();
+            DataTable dt = new DataTable();
+            dt.Load(rdr);
+
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            string strJSON = JsonConvert.SerializeObject(dt);
+
+            return strJSON;
+        }
+    }
+
+    [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public String get_searchproducts(string customer_id, string cart_guest_id, string pnm)
     {
@@ -268,8 +307,8 @@ public class WebService : System.Web.Services.WebService
             return strJSON;
         }
     }
-	
-	[WebMethod]
+
+    [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public String get_product(string customer_id, string cart_guest_id)
     {
@@ -294,7 +333,7 @@ public class WebService : System.Web.Services.WebService
             return strJSON;
         }
     }
-	
+
     [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public String get_featured(string customer_id, string cart_guest_id)
@@ -385,19 +424,20 @@ public class WebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public String register_user(string name, string mobile, string password)
+    public String register_user(string name, string mobile, string password, string guest_id)
     {
         string output = string.Empty;
 
         using (SqlConnection con = new SqlConnection(cs))
         {
-            using (SqlCommand cmd = new SqlCommand("INSERT INTO ecommerce_customer(customer_mobileno,customer_name,customer_password,customer_date,customer_time,customer_id,customer_temp_id,customer_status) VALUES (@customer_mobileno, @customer_name, @customer_password,CAST(GETDATE()AS Date),CONVERT(VARCHAR(8),GETDATE(),108),@customer_id,@customer_temp_id,@customer_status)"))
+            using (SqlCommand cmd = new SqlCommand("INSERT INTO ecommerce_customer(guest_id,customer_mobileno,customer_name,customer_password,customer_date,customer_time,customer_id,customer_temp_id,customer_status) VALUES (@guest_id,@customer_mobileno, @customer_name, @customer_password,CAST(GETDATE()AS Date),CONVERT(VARCHAR(8),GETDATE(),108),@customer_id,@customer_temp_id,@customer_status)"))
             {
                 cmd.Parameters.AddWithValue("@customer_mobileno", mobile);
                 cmd.Parameters.AddWithValue("@customer_name", name);
                 cmd.Parameters.AddWithValue("@customer_temp_id", gettempuserid());
                 cmd.Parameters.AddWithValue("@customer_id", getuserid());
                 cmd.Parameters.AddWithValue("@customer_password", Encrypted(password));
+                cmd.Parameters.AddWithValue("@guest_id", guest_id);
                 cmd.Parameters.AddWithValue("@customer_status", "Active");
                 cmd.Connection = con;
                 con.Open();
@@ -574,8 +614,17 @@ public class WebService : System.Web.Services.WebService
                 while (rdr.Read())
                 {
                     string tempidplus = rdr["customer_temp_id"].ToString();
-                    string tempid = Convert.ToString(Convert.ToInt32(tempidplus) + 1);
-                    id = DateTime.Now.Year + "0" + DateTime.Now.Month + Convert.ToString(tempid);
+                    if (tempidplus == "")
+                    {
+                        string tempid = "1";
+                        id = DateTime.Now.Year + "0" + DateTime.Now.Month + Convert.ToString(tempid);
+                    }
+                    else
+                    {
+                        string tempid = Convert.ToString(Convert.ToInt32(tempidplus) + 1);
+                        id = DateTime.Now.Year + "0" + DateTime.Now.Month + Convert.ToString(tempid);
+                    }
+
                 }
             }
 
@@ -609,8 +658,16 @@ public class WebService : System.Web.Services.WebService
                 while (rdr.Read())
                 {
                     string tempidplus = rdr["customer_temp_id"].ToString();
-                    string tempid = Convert.ToString(Convert.ToInt32(tempidplus) + 1);
-                    id = Convert.ToString(tempid);
+                    if (tempidplus == "")
+                    {
+                        id = "1";
+                    }
+                    else
+                    {
+                        string tempid = Convert.ToString(Convert.ToInt32(tempidplus) + 1);
+                        id = Convert.ToString(tempid);
+                    }
+
                 }
             }
 
@@ -768,56 +825,133 @@ public class WebService : System.Web.Services.WebService
 
         using (SqlConnection con = new SqlConnection(cs))
         {
-            if (customer_id != "")
+
+            if (customer_id != "" || customer_id == "0")
             {
-                using (SqlCommand cmd = new SqlCommand("INSERT INTO ecommerce_cart(product_sellername,cart_no,cart_date,cart_qty,customer_id,cart_guest_id,product_id,product_price_id,store_location) VALUES (@product_sellername,@cart_no,CAST(GETDATE()AS Date),@cart_qty,@customer_id,@cart_guest_id,@product_id,@product_price_id,@store_location)"))
+
+                SqlCommand cmd1 = new SqlCommand();
+                #region SQl select command
+                cmd1.CommandText = @"select count(*) as num from ecommerce_cart where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "'";
+                #endregion
+                cmd1.CommandType = CommandType.Text;
+                cmd1.Connection = con;
+                con.Open();
+                SqlDataReader rdr = cmd1.ExecuteReader();
+                if (rdr.Read())
                 {
-                    cmd.Parameters.AddWithValue("@cart_no", getidno("cart_no", "ecommerce_cart"));
-                    cmd.Parameters.AddWithValue("@cart_qty", cart_qty);
-                    cmd.Parameters.AddWithValue("@customer_id", customer_id);
-                    cmd.Parameters.AddWithValue("@cart_guest_id", cart_guest_id);
-                    cmd.Parameters.AddWithValue("@product_id", product_id);
-                    cmd.Parameters.AddWithValue("@product_price_id", product_price_id);
-                    cmd.Parameters.AddWithValue("@store_location", "APP");
+                    if (rdr["num"].ToString() == "0")
+                    {
+                        rdr.Close();
+                        con.Close();
+                        using (SqlCommand cmd = new SqlCommand("INSERT INTO ecommerce_cart(product_sellername,cart_no,cart_date,cart_qty,customer_id,cart_guest_id,product_id,product_price_id,store_location) VALUES (@product_sellername,@cart_no,CAST(GETDATE()AS Date),@cart_qty,@customer_id,@cart_guest_id,@product_id,@product_price_id,@store_location)"))
+                        {
+                            cmd.Parameters.AddWithValue("@cart_no", getidno("cart_no", "ecommerce_cart"));
+                            cmd.Parameters.AddWithValue("@cart_qty", cart_qty);
+                            cmd.Parameters.AddWithValue("@customer_id", customer_id);
+                            cmd.Parameters.AddWithValue("@cart_guest_id", cart_guest_id);
+                            cmd.Parameters.AddWithValue("@product_id", product_id);
+                            cmd.Parameters.AddWithValue("@product_price_id", product_price_id);
+                            cmd.Parameters.AddWithValue("@store_location", "APP");
 
-                    double qty = Convert.ToDouble(cart_qty);
-                    double mrp = Convert.ToDouble(get_price(product_price_id));
-                    double total = qty * mrp;
-                    cmd.Parameters.AddWithValue("@product_sellername", total.ToString());
-                    cmd.Connection = con;
-                    con.Open();
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    reader.Close();
-                    con.Close();
+                            double qty = Convert.ToDouble(cart_qty);
+                            double mrp = Convert.ToDouble(get_price(product_price_id));
+                            double total = qty * mrp;
+                            cmd.Parameters.AddWithValue("@product_sellername", total.ToString());
+                            cmd.Connection = con;
+                            con.Open();
+                            SqlDataReader reader = cmd.ExecuteReader();
+                            reader.Close();
+                            con.Close();
 
+                        }
+                    }
+                    else
+                    {
+                        rdr.Close();
+                        con.Close();
+                        int current_qty = get_cart_qty_product(cart_guest_id, customer_id, product_id, product_price_id);
+                        current_qty = current_qty + 1;
+                        addtocart_changeqty(current_qty.ToString(), customer_id, cart_guest_id, product_id, product_price_id);
+                    }
                 }
             }
+
             else
             {
-                using (SqlCommand cmd = new SqlCommand("INSERT INTO ecommerce_cart(product_sellername,cart_no,cart_date,cart_qty,customer_id,cart_guest_id,product_id,product_price_id,store_location) VALUES (@product_sellername,@cart_no,CAST(GETDATE()AS Date),@cart_qty,@customer_id,@cart_guest_id,@product_id,@product_price_id,@store_location)"))
+                SqlCommand cmd1 = new SqlCommand();
+                #region SQl select command
+                cmd1.CommandText = @"select count(*) as num from ecommerce_cart where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "'";
+                #endregion
+                cmd1.CommandType = CommandType.Text;
+                cmd1.Connection = con;
+                con.Open();
+                SqlDataReader rdr = cmd1.ExecuteReader();
+                if (rdr.Read())
                 {
-                    cmd.Parameters.AddWithValue("@cart_no", getidno("cart_no", "ecommerce_cart"));
-                    cmd.Parameters.AddWithValue("@cart_qty", cart_qty);
-                    cmd.Parameters.AddWithValue("@customer_id", "0");
-                    cmd.Parameters.AddWithValue("@cart_guest_id", cart_guest_id);
-                    cmd.Parameters.AddWithValue("@product_id", product_id);
-                    cmd.Parameters.AddWithValue("@product_price_id", product_price_id);
-                    cmd.Parameters.AddWithValue("@store_location", "APP");
+                    if (rdr["num"].ToString() == "0")
+                    {
+                        rdr.Close();
+                        con.Close();
+                        using (SqlCommand cmd = new SqlCommand("INSERT INTO ecommerce_cart(product_sellername,cart_no,cart_date,cart_qty,customer_id,cart_guest_id,product_id,product_price_id,store_location) VALUES (@product_sellername,@cart_no,CAST(GETDATE()AS Date),@cart_qty,@customer_id,@cart_guest_id,@product_id,@product_price_id,@store_location)"))
+                        {
+                            cmd.Parameters.AddWithValue("@cart_no", getidno("cart_no", "ecommerce_cart"));
+                            cmd.Parameters.AddWithValue("@cart_qty", cart_qty);
+                            cmd.Parameters.AddWithValue("@customer_id", "0");
+                            cmd.Parameters.AddWithValue("@cart_guest_id", cart_guest_id);
+                            cmd.Parameters.AddWithValue("@product_id", product_id);
+                            cmd.Parameters.AddWithValue("@product_price_id", product_price_id);
+                            cmd.Parameters.AddWithValue("@store_location", "APP");
 
-                    double qty = Convert.ToDouble(cart_qty);
-                    double mrp = Convert.ToDouble(get_price(product_price_id));
-                    double total = qty * mrp;
-                    cmd.Parameters.AddWithValue("@product_sellername", total.ToString());
+                            double qty = Convert.ToDouble(cart_qty);
+                            double mrp = Convert.ToDouble(get_price(product_price_id));
+                            double total = qty * mrp;
+                            cmd.Parameters.AddWithValue("@product_sellername", total.ToString());
 
-                    cmd.Connection = con;
-                    con.Open();
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    reader.Close();
-                    con.Close();
+                            cmd.Connection = con;
+                            con.Open();
+                            SqlDataReader reader = cmd.ExecuteReader();
+                            reader.Close();
+                            con.Close();
 
+                        }
+                    }
+                    else
+                    {
+                        rdr.Close();
+                        con.Close();
+                        int current_qty = get_cart_qty_product(cart_guest_id, customer_id, product_id, product_price_id);
+                        current_qty = current_qty + 1;
+                        addtocart_changeqty(current_qty.ToString(), customer_id, cart_guest_id, product_id, product_price_id);
+                    }
                 }
+
             }
         }
+    }
+
+    private int get_cart_qty_product(string cart_guest_id, string customer_id, string product_id, string product_price_id)
+    {
+        int n = 0;
+
+        using (SqlConnection con = new SqlConnection(cs))
+        {
+            SqlCommand cmd = new SqlCommand();
+            #region SQl select command
+            cmd.CommandText = @"select count(*) as num from ecommerce_cart where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'";
+            #endregion
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = con;
+            con.Open();
+            SqlDataReader rdr = cmd.ExecuteReader();
+            if (rdr.Read())
+            {
+                n = Convert.ToInt32(rdr["num"].ToString());
+            }
+            rdr.Close();
+            con.Close();
+        }
+
+        return n;
     }
 
     private double get_price(string product_price_id)
@@ -839,40 +973,23 @@ public class WebService : System.Web.Services.WebService
             }
 
         }
-            return a;
+        return a;
     }
 
     [WebMethod]
     public void removetocart(string customer_id, string cart_guest_id, string product_id, string product_price_id)
     {
-
         using (SqlConnection con = new SqlConnection(cs))
         {
-            if (cart_guest_id == "")
+            using (SqlCommand cmd = new SqlCommand("delete from ecommerce_cart where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
             {
-                using (SqlCommand cmd = new SqlCommand("delete from ecommerce_cart where customer_id='" + customer_id + "' and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    reader.Close();
-                    con.Close();
+                cmd.Connection = con;
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                reader.Close();
+                con.Close();
 
-                }
             }
-            else if (cart_guest_id != "")
-            {
-                using (SqlCommand cmd = new SqlCommand("delete from ecommerce_cart where customer_id='" + customer_id + "' and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    reader.Close();
-                    con.Close();
-
-                }
-            }
-
         }
     }
 
@@ -880,50 +997,24 @@ public class WebService : System.Web.Services.WebService
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public String get_cartproduct(string customer_id, string cart_guest_id)
     {
-
-
-        if (customer_id != "")
+        using (SqlConnection con = new SqlConnection(cs))
         {
-            using (SqlConnection con = new SqlConnection(cs))
-            {
-                SqlCommand cmd = new SqlCommand();
-                #region SQl select command
-                cmd.CommandText = @"select a.*,b.country_of_origin,c.product_shipping_charge,b.product_full_description,b.product_id,b.product_full_name,b.product_description,b.product_parent_category_id,b.product_parent_category_name,b.product_sub_category_id,b.product_sub_category_name,b.publish_status,b.verticle_id,b.verticle_name,ISNULL(c.product_final_sell_price,'0.00') as product_final_sell_price,c.product_unit,c.product_unit_value,c.product_market_price,c.product_GST_type,c.product_tax_type,c.product_GST_percentage,c.product_GST_rate,c.product_CGST_percentage,c.product_CGST_rate,c.product_SGST_percentage,c.product_SGST_rate,c.product_IGST_percentage,c.product_IGST_rate,c.id,c.product_market_price,c.product_sell_price,c.product_discount_percentage,c.product_discount_price,c.product_with_gst_Price,isnull(c.product_stock,'0') as product_stock,d.photo_path as photo_path from ecommerce_cart a left join ecommerce_product as b on a.product_id=b.product_id left join ecommerce_product_price as c on a.product_price_id=c.id left join ecommerce_product_photos as d on b.product_id=d.product_id where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "')";
-                #endregion
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = con;
-                con.Open();
-                SqlDataReader rdr = cmd.ExecuteReader();
-                DataTable dt = new DataTable();
-                dt.Load(rdr);
+            SqlCommand cmd = new SqlCommand();
+            #region SQl select command
+            cmd.CommandText = @"select a.*,b.country_of_origin,c.product_shipping_charge,b.product_full_description,b.product_id,b.product_full_name,b.product_description,b.product_parent_category_id,b.product_parent_category_name,b.product_sub_category_id,b.product_sub_category_name,b.publish_status,b.verticle_id,b.verticle_name,ISNULL(c.product_final_sell_price,'0.00') as product_final_sell_price,c.product_unit,c.product_unit_value,c.product_market_price,c.product_GST_type,c.product_tax_type,c.product_GST_percentage,c.product_GST_rate,c.product_CGST_percentage,c.product_CGST_rate,c.product_SGST_percentage,c.product_SGST_rate,c.product_IGST_percentage,c.product_IGST_rate,c.id,c.product_market_price,c.product_sell_price,c.product_discount_percentage,c.product_discount_price,c.product_with_gst_Price,isnull(c.product_stock,'0') as product_stock,(select top 1 photo_path from ecommerce_product_photos where product_id=b.product_id) as photo_path from ecommerce_cart a left join ecommerce_product as b on a.product_id=b.product_id left join ecommerce_product_price as c on a.product_price_id=c.id where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "')";
+            #endregion
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = con;
+            con.Open();
+            SqlDataReader rdr = cmd.ExecuteReader();
+            DataTable dt = new DataTable();
+            dt.Load(rdr);
 
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                string strJSON = JsonConvert.SerializeObject(dt);
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            string strJSON = JsonConvert.SerializeObject(dt);
 
-                return strJSON;
+            return strJSON;
 
-            }
-        }
-        else
-        {
-            using (SqlConnection con = new SqlConnection(cs))
-            {
-                SqlCommand cmd = new SqlCommand();
-                #region SQl select command
-                cmd.CommandText = @"select a.*,b.country_of_origin,c.product_shipping_charge,b.product_full_description,b.product_id,b.product_full_name,b.product_description,b.product_parent_category_id,b.product_parent_category_name,b.product_sub_category_id,b.product_sub_category_name,b.publish_status,b.verticle_id,b.verticle_name,ISNULL(c.product_final_sell_price,'0.00') as product_final_sell_price,c.product_unit,c.product_unit_value,c.product_market_price,c.product_GST_type,c.product_tax_type,c.product_GST_percentage,c.product_GST_rate,c.product_CGST_percentage,c.product_CGST_rate,c.product_SGST_percentage,c.product_SGST_rate,c.product_IGST_percentage,c.product_IGST_rate,c.id,c.product_market_price,c.product_sell_price,c.product_discount_percentage,c.product_discount_price,c.product_with_gst_Price,isnull(c.product_stock,'0') as product_stock,d.photo_path as photo_path from ecommerce_cart a left join ecommerce_product as b on a.product_id=b.product_id left join ecommerce_product_price as c on a.product_price_id=c.id left join ecommerce_product_photos as d on b.product_id=d.product_id where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "')";
-                #endregion
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = con;
-                con.Open();
-                SqlDataReader rdr = cmd.ExecuteReader();
-                DataTable dt = new DataTable();
-                dt.Load(rdr);
-
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                string strJSON = JsonConvert.SerializeObject(dt);
-
-                return strJSON;
-            }
         }
     }
 
@@ -964,10 +1055,10 @@ public class WebService : System.Web.Services.WebService
             double qty = Convert.ToDouble(cart_qty);
             double mrp = Convert.ToDouble(get_price(product_price_id));
             double total = qty * mrp;
-            
+
             if (customer_id != "")
             {
-                using (SqlCommand cmd = new SqlCommand("update ecommerce_cart set cart_qty='" + cart_qty + "',product_sellername='"+ total.ToString() + "' where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
+                using (SqlCommand cmd = new SqlCommand("update ecommerce_cart set cart_qty='" + cart_qty + "',product_sellername='" + total.ToString() + "' where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
                 {
                     cmd.Connection = con;
                     con.Open();
@@ -978,7 +1069,7 @@ public class WebService : System.Web.Services.WebService
             }
             else
             {
-                using (SqlCommand cmd = new SqlCommand("update ecommerce_cart set cart_qty='" + cart_qty + "',product_sellername='"+ total.ToString() + "' where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
+                using (SqlCommand cmd = new SqlCommand("update ecommerce_cart set cart_qty='" + cart_qty + "',product_sellername='" + total.ToString() + "' where (customer_id='" + customer_id + "' or cart_guest_id='" + cart_guest_id + "') and product_id='" + product_id + "' and product_price_id='" + product_price_id + "'"))
                 {
                     cmd.Connection = con;
                     con.Open();
@@ -1560,7 +1651,7 @@ public class WebService : System.Web.Services.WebService
 
 
     [WebMethod]
-    public void addorder(string guest_id, string payment_mode, string items, string address, string total_order_amount,string customer_id)
+    public void addorder(string guest_id, string payment_mode, string items, string address, string total_order_amount, string customer_id)
     {
         string order_id_temp = getorder_id_temp();
         string order_id = "ODR" + order_id_temp;
@@ -1568,7 +1659,7 @@ public class WebService : System.Web.Services.WebService
         var add = JsonConvert.DeserializeObject<List<Address>>(address);
         var product = JsonConvert.DeserializeObject<List<ProductModel>>(items);
 
-        string address_customer_name=string.Empty;string address_customer_mobileno = string.Empty;
+        string address_customer_name = string.Empty; string address_customer_mobileno = string.Empty;
         string address_customer_email = string.Empty; string address_line_1 = string.Empty;
         string address_line_2 = string.Empty; string address_city_id = string.Empty; string address_city_name = string.Empty;
         string address_state_id = string.Empty; string address_state_name = string.Empty; string address_pincode = string.Empty;
@@ -1608,8 +1699,8 @@ public class WebService : System.Web.Services.WebService
 
                 #endregion
                 cmd.CommandType = CommandType.Text;
-				cmd.Parameters.AddWithValue("@coupan_value", "0.00");
-				cmd.Parameters.AddWithValue("@order_section", "Grocery");
+                cmd.Parameters.AddWithValue("@coupan_value", "0.00");
+                cmd.Parameters.AddWithValue("@order_section", "Grocery");
                 cmd.Parameters.AddWithValue("@guest_id", guest_id);
                 cmd.Parameters.AddWithValue("@order_id_temp", order_id_temp);
                 cmd.Parameters.AddWithValue("@order_id", order_id);
@@ -1663,7 +1754,7 @@ public class WebService : System.Web.Services.WebService
                     cmd.Parameters.AddWithValue("@product_IGST_rate", p.product_IGST_rate);
                 }
 
-                
+
                 cmd.Parameters.AddWithValue("@product_market_price", p.product_market_price);
                 cmd.Parameters.AddWithValue("@product_sell_price", p.product_sell_price);
                 cmd.Parameters.AddWithValue("@product_discount_percentage", p.product_discount_percentage);
@@ -1685,7 +1776,7 @@ public class WebService : System.Web.Services.WebService
 
             }
 
-            removetocart(customer_id, guest_id,p.product_id, p.product_price_id);
+            removetocart(customer_id, guest_id, p.product_id, p.product_price_id);
 
         }
     }
@@ -1725,7 +1816,7 @@ public class WebService : System.Web.Services.WebService
     {
         using (SqlConnection con = new SqlConnection(cs))
         {
-            using (SqlCommand cmd = new SqlCommand("update ecommerce_order set order_status='Cancelled',order_return_reason='"+ order_return_reason + "',order_return_comment='" + order_return_comment + "' where customer_id='" + customer_id + "' and product_id='" + product_id + "' and order_id='" + order_id + "'"))
+            using (SqlCommand cmd = new SqlCommand("update ecommerce_order set order_status='Cancelled',order_return_reason='" + order_return_reason + "',order_return_comment='" + order_return_comment + "' where customer_id='" + customer_id + "' and product_id='" + product_id + "' and order_id='" + order_id + "'"))
             {
                 cmd.Connection = con;
                 con.Open();
@@ -1737,7 +1828,7 @@ public class WebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public void Cancel_Allorder(string order_return_comment, string customer_id, string order_return_reason,string order_id)
+    public void Cancel_Allorder(string order_return_comment, string customer_id, string order_return_reason, string order_id)
     {
         using (SqlConnection con = new SqlConnection(cs))
         {
@@ -1815,13 +1906,13 @@ public class WebService : System.Web.Services.WebService
 
     [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public String get_order_rpt(string delivery_boy_id,string dtt)
+    public String get_order_rpt(string delivery_boy_id, string dtt)
     {
         using (SqlConnection con = new SqlConnection(cs))
         {
             SqlCommand cmd = new SqlCommand();
             #region SQl select command
-            if (dtt == "All") 
+            if (dtt == "All")
             {
                 cmd.CommandText = @"select MAX(product_shipping_charge) as product_shipping_charge,MAX(product_photo) as product_photo,MAX(total_amount_of_product) as total_amount_of_product,MAX(product_unit_value) as product_unit_value,MAX(product_unit) as product_unit,MAX(product_qty) as product_qty,MAX(product_name) as product_name,MAX(product_id) as product_id,MAX(billing_landmark) as billing_landmark,MAX(billing_pincode) as billing_pincode,MAX(billing_state_name) as billing_state_name,MAX(billing_city_name) as billing_city_name,MAX(billing_address_line2) as billing_address_line2,MAX(billing_address_line1) as billing_address_line1,MAX(guest_id) as guest_id,MAX(customer_email) as customer_email,MAX(customer_mobileno) as customer_mobileno,MAX(customer_name) as customer_name,MAX(order_time) as order_time,MAX(order_date) as order_date,MAX(sub_order_id) as sub_order_id,MAX(sub_order_id_temp) as sub_order_id_temp,MAX(order_id_temp) as order_id_temp,MAX(order_id) as order_id,MAX(total_order_amount) AS total_order_amount,MAX(coupan_value) as coupan_value,MAX(coupan_code) as coupan_code,MAX(payment_mode)as payment_mode,MAX(order_delivery_date) as order_delivery_date,MAX(order_delivery_time)as order_delivery_time,MAX(order_status) as order_status,MAX(customer_id) as customer_id from ecommerce_order  where delivery_boy_id='" + delivery_boy_id + "' and order_status='Delivered' group by order_id";
             }
@@ -1833,11 +1924,11 @@ public class WebService : System.Web.Services.WebService
             {
                 cmd.CommandText = @"select MAX(product_shipping_charge) as product_shipping_charge,MAX(product_photo) as product_photo,MAX(total_amount_of_product) as total_amount_of_product,MAX(product_unit_value) as product_unit_value,MAX(product_unit) as product_unit,MAX(product_qty) as product_qty,MAX(product_name) as product_name,MAX(product_id) as product_id,MAX(billing_landmark) as billing_landmark,MAX(billing_pincode) as billing_pincode,MAX(billing_state_name) as billing_state_name,MAX(billing_city_name) as billing_city_name,MAX(billing_address_line2) as billing_address_line2,MAX(billing_address_line1) as billing_address_line1,MAX(guest_id) as guest_id,MAX(customer_email) as customer_email,MAX(customer_mobileno) as customer_mobileno,MAX(customer_name) as customer_name,MAX(order_time) as order_time,MAX(order_date) as order_date,MAX(sub_order_id) as sub_order_id,MAX(sub_order_id_temp) as sub_order_id_temp,MAX(order_id_temp) as order_id_temp,MAX(order_id) as order_id,MAX(total_order_amount) AS total_order_amount,MAX(coupan_value) as coupan_value,MAX(coupan_code) as coupan_code,MAX(payment_mode)as payment_mode,MAX(order_delivery_date) as order_delivery_date,MAX(order_delivery_time)as order_delivery_time,MAX(order_status) as order_status,MAX(customer_id) as customer_id from ecommerce_order  where delivery_boy_id='" + delivery_boy_id + "' and order_delivery_date BETWEEN GETDATE()-7 AND GETDATE() and order_status='Delivered' group by order_id";
             }
-            else 
+            else
             {
                 cmd.CommandText = @"select MAX(product_shipping_charge) as product_shipping_charge,MAX(product_photo) as product_photo,MAX(total_amount_of_product) as total_amount_of_product,MAX(product_unit_value) as product_unit_value,MAX(product_unit) as product_unit,MAX(product_qty) as product_qty,MAX(product_name) as product_name,MAX(product_id) as product_id,MAX(billing_landmark) as billing_landmark,MAX(billing_pincode) as billing_pincode,MAX(billing_state_name) as billing_state_name,MAX(billing_city_name) as billing_city_name,MAX(billing_address_line2) as billing_address_line2,MAX(billing_address_line1) as billing_address_line1,MAX(guest_id) as guest_id,MAX(customer_email) as customer_email,MAX(customer_mobileno) as customer_mobileno,MAX(customer_name) as customer_name,MAX(order_time) as order_time,MAX(order_date) as order_date,MAX(sub_order_id) as sub_order_id,MAX(sub_order_id_temp) as sub_order_id_temp,MAX(order_id_temp) as order_id_temp,MAX(order_id) as order_id,MAX(total_order_amount) AS total_order_amount,MAX(coupan_value) as coupan_value,MAX(coupan_code) as coupan_code,MAX(payment_mode)as payment_mode,MAX(order_delivery_date) as order_delivery_date,MAX(order_delivery_time)as order_delivery_time,MAX(order_status) as order_status,MAX(customer_id) as customer_id from ecommerce_order  where delivery_boy_id='" + delivery_boy_id + "' and order_delivery_date='" + dtt + "' and order_status='Delivered' group by order_id";
             }
-            
+
             #endregion
             cmd.CommandType = CommandType.Text;
             cmd.Connection = con;
@@ -1854,12 +1945,12 @@ public class WebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public void change_order_status(string order_status, string shipping_address_line1, string shipping_address_line2, string shipping_city_id, string shipping_city_name,string shipping_state_id,string shipping_state_name,string shipping_pincode, string order_id)
+    public void change_order_status(string order_status, string shipping_address_line1, string shipping_address_line2, string shipping_city_id, string shipping_city_name, string shipping_state_id, string shipping_state_name, string shipping_pincode, string order_id)
     {
         using (SqlConnection con = new SqlConnection(cs))
         {
 
-            if(order_status== "Delivered")
+            if (order_status == "Delivered")
             {
                 using (SqlCommand cmd = new SqlCommand("update ecommerce_order set order_status='Delivered',shipping_address_line1='" + shipping_address_line1 + "',shipping_address_line2='" + shipping_address_line2 + "',shipping_city_id='" + shipping_city_id + "',shipping_city_name='" + shipping_city_name + "',shipping_state_id='" + shipping_state_id + "',shipping_state_name='" + shipping_state_name + "',shipping_pincode='" + shipping_pincode + "',order_delivery_date='" + DateTime.Now.ToString("yyyy-MM-dd") + "',order_delivery_time='" + DateTime.Now.ToString("HH:MM:ss") + "' where order_id='" + order_id + "'"))
                 {
@@ -1884,7 +1975,7 @@ public class WebService : System.Web.Services.WebService
                     con.Close();
                 }
             }
-            
+
         }
     }
 

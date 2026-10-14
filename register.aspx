@@ -1,6 +1,56 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="register.aspx.cs" Inherits="register" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <style>
+        @media (max-width: 576px) {
+
+            .registration-form-wrapper {
+                padding: 25px 15px !important;
+                margin: 0 10px;
+            }
+
+            .form-header h2 {
+                font-size: 26px;
+            }
+
+            .form-header p {
+                font-size: 14px;
+            }
+
+            .registration-form-wrapper .col-lg-8 {
+                width: 100%;
+            }
+
+            .row.mb-3 {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+                .row.mb-3 > .col-md-6 {
+                    width: 100%;
+                    padding-left: 0;
+                    padding-right: 0;
+                    margin-bottom: 15px;
+                }
+
+            .form-control {
+                font-size: 15px;
+            }
+
+            .form-check {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            .btn-register {
+                width: 100%;
+            }
+
+            .social-buttons .btn-social {
+                width: 100%;
+            }
+        }
+    </style>
 
     <!-- Page Title -->
     <div class="page-title light-background">
@@ -33,31 +83,31 @@
                             <div class="col-lg-8 mx-auto">
                                 <div>
                                     <div class="form-floating mb-3">
-                                        <asp:TextBox runat="server" type="text" class="form-control" id="fullName" name="fullName" placeholder="Full Name" required="" autocomplete="name"></asp:TextBox>
+                                        <asp:TextBox runat="server" type="text" class="form-control" ID="fullName" name="fullName" placeholder="Full Name" required="" autocomplete="name"></asp:TextBox>
                                         <label for="fullName">Full Name</label>
                                     </div>
 
                                     <div class="form-floating mb-3">
-                                        <asp:TextBox runat="server" type="email" class="form-control" id="email" name="email" placeholder="Email Address" required="" autocomplete="email"></asp:TextBox>
+                                        <asp:TextBox runat="server" type="email" class="form-control" ID="email" name="email" placeholder="Email Address" required="" autocomplete="email"></asp:TextBox>
                                         <label for="email">Email Address</label>
                                     </div>
 
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <div class="form-floating">
-                                                <asp:TextBox runat="server" type="password" class="form-control" id="password" name="password" placeholder="Password" required="" minlength="8" autocomplete="new-password"></asp:TextBox>
+                                                <asp:TextBox runat="server" type="password" class="form-control" ID="password" name="password" placeholder="Password" required="" minlength="8" autocomplete="new-password"></asp:TextBox>
                                                 <label for="password">Password</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-floating">
-                                                <asp:TextBox runat="server" type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required="" minlength="8" autocomplete="new-password"></asp:TextBox>
+                                                <asp:TextBox runat="server" type="password" class="form-control" ID="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required="" minlength="8" autocomplete="new-password"></asp:TextBox>
                                                 <label for="confirmPassword">Confirm Password</label>
                                             </div>
                                         </div>
                                     </div>
 
-                                    
+
 
                                     <div class="form-check mb-4">
                                         <input class="form-check-input" type="checkbox" id="termsCheck" name="termsCheck" required="">

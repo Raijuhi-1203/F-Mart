@@ -442,6 +442,37 @@ public class Master
         }
         return (RowsAffected);
     }
+    public int Edit_Address(string customer_id, string address_customer_name, string address_customer_email, string address_customer_mobileno, string address_line_1, string address_line_2, string address_state_name, string address_city_name, string address_pincode)
+    {
+        con.Close();
+        con.Open();
+        int RowsAffected = 0;
+        try
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = con;
+            cmd.CommandText = "update ecommerce_customer_address set address_customer_name=@address_customer_name,address_customer_mobileno=@address_customer_mobileno, address_customer_email=@address_customer_email, address_line_1=@address_line_1, address_line_2=@address_line_2, address_state_name=@address_state_name, address_city_name=@address_city_name,address_pincode=@address_pincode where customer_id=@customer_id";
+            cmd.CommandType = CommandType.Text;
+
+            cmd.Parameters.AddWithValue("@customer_id", SqlDbType.NVarChar).Value = customer_id;
+            cmd.Parameters.AddWithValue("@address_customer_mobileno", SqlDbType.NVarChar).Value = address_customer_mobileno;
+            cmd.Parameters.AddWithValue("@address_customer_name", SqlDbType.NVarChar).Value = address_customer_name;
+            cmd.Parameters.AddWithValue("@address_customer_email", SqlDbType.NVarChar).Value = address_customer_email;
+            cmd.Parameters.AddWithValue("@address_line_1", SqlDbType.NVarChar).Value = address_line_1;
+            cmd.Parameters.AddWithValue("@address_line_2", SqlDbType.NVarChar).Value = address_line_2;
+            cmd.Parameters.AddWithValue("@address_state_name", SqlDbType.NVarChar).Value = address_state_name;
+            cmd.Parameters.AddWithValue("@address_city_name", SqlDbType.NVarChar).Value = address_city_name;
+            cmd.Parameters.AddWithValue("@address_pincode", SqlDbType.NVarChar).Value = address_pincode;
+
+            RowsAffected = cmd.ExecuteNonQuery();
+            con.Close();
+        }
+        catch (SqlException ex)
+        {
+            throw ex;
+        }
+        return (RowsAffected);
+    }
 
     public int Update_Profile(string customer_id, string customer_name, string customer_email, string customer_mobileno)
     {
@@ -534,9 +565,9 @@ public class Master
         return (RowsAffected);
     }
 
-    public int Add_Order(string customer_id, string customer_name, string customer_email, string customer_mobileno, string billing_address_line1, string billing_address_line2, string billing_state_name, string billing_city_name, string billing_pincode, string product_id, string product_price_id, string total_order_amount, string order_id, string order_id_temp)
+    public int Add_Order(string product_IGST_percentage, string product_IGST_rate, string customer_id, string customer_name, string customer_email, string customer_mobileno, string billing_address_line1, string billing_address_line2, string billing_state_name, string billing_city_name, string billing_pincode, string product_id, string product_price_id, string total_order_amount, string order_id, string order_id_temp, string payment_mode, string payment_id, string payment_order_id, string transaction_status, string transaction_id, string transaction_gatway_name, string bank_transaction_id, string payment_request_id, string transaction_payment_mode)
     {
-        
+
         int RowsAffected = 0;
 
         con.Close();
@@ -548,18 +579,18 @@ public class Master
         SqlDataReader reader1 = cmd1.ExecuteReader();
         if (reader1.Read())
         {
-            
+
 
             double total_amount_of_product;
             double cartqty = Convert.ToDouble(reader1["cart_qty"].ToString());
             double price = Convert.ToDouble(reader1["product_sell_price"].ToString());
             total_amount_of_product = cartqty * price;
 
-            
+
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = con;
 
-            cmd.CommandText = @"insert into ecommerce_order(guest_id,order_id_temp,order_id,cart_no,order_date,order_time,customer_id,customer_name,customer_mobileno,customer_email,billing_address_line1,billing_address_line2,billing_city_id,billing_city_name,billing_state_id,billing_state_name,billing_pincode,billing_landmark,product_id,product_price_id,product_name,product_hsn_sac,product_qty,product_unit,product_unit_value,product_currecny,product_GST_type,product_tax_type,product_GST_percentage,product_GST_rate,product_CGST_percentage,product_CGST_rate,product_SGST_percentage,product_SGST_rate,product_IGST_percentage,product_IGST_rate,product_market_price,product_sell_price,product_discount_percentage,product_discount_price,product_with_gst_Price,product_final_sell_price,total_market_price,product_shipping_charge,total_amount_of_product,total_order_amount,product_photo,payment_mode,order_status,order_section,coupan_value) values (@guest_id,@order_id_temp,@order_id,@cart_no,@order_date,@order_time,@customer_id,@customer_name,@customer_mobileno,@customer_email,@billing_address_line1,@billing_address_line2,@billing_city_id,@billing_city_name,@billing_state_id,@billing_state_name,@billing_pincode,@billing_landmark,@product_id,@product_price_id,@product_name,@product_hsn_sac,@product_qty,@product_unit,@product_unit_value,@product_currecny,@product_GST_type,@product_tax_type,@product_GST_percentage,@product_GST_rate,@product_CGST_percentage,@product_CGST_rate,@product_SGST_percentage,@product_SGST_rate,@product_IGST_percentage,@product_IGST_rate,@product_market_price,@product_sell_price,@product_discount_percentage,@product_discount_price,@product_with_gst_Price,@product_final_sell_price,@total_market_price,@product_shipping_charge,@total_amount_of_product,@total_order_amount,@product_photo,@payment_mode,@order_status,@order_section,@coupan_value)";
+            cmd.CommandText = @"insert into ecommerce_order(guest_id,order_id_temp,order_id,cart_no,order_date,order_time,customer_id,customer_name,customer_mobileno,customer_email,billing_address_line1,billing_address_line2,billing_city_id,billing_city_name,billing_state_id,billing_state_name,billing_pincode,billing_landmark,product_id,product_price_id,product_name,product_hsn_sac,product_qty,product_unit,product_unit_value,product_currecny,product_GST_type,product_tax_type,product_GST_percentage,product_GST_rate,product_CGST_percentage,product_CGST_rate,product_SGST_percentage,product_SGST_rate,product_IGST_percentage,product_IGST_rate,product_market_price,product_sell_price,product_discount_percentage,product_discount_price,product_with_gst_Price,product_final_sell_price,total_market_price,product_shipping_charge,total_amount_of_product,total_order_amount,product_photo,payment_mode,order_status,order_section,coupan_value,payment_id,payment_order_id,transaction_status,transaction_id,transaction_gatway_name,bank_transaction_id,payment_request_id,transaction_payment_mode) values (@guest_id,@order_id_temp,@order_id,@cart_no,@order_date,@order_time,@customer_id,@customer_name,@customer_mobileno,@customer_email,@billing_address_line1,@billing_address_line2,@billing_city_id,@billing_city_name,@billing_state_id,@billing_state_name,@billing_pincode,@billing_landmark,@product_id,@product_price_id,@product_name,@product_hsn_sac,@product_qty,@product_unit,@product_unit_value,@product_currecny,@product_GST_type,@product_tax_type,@product_GST_percentage,@product_GST_rate,@product_CGST_percentage,@product_CGST_rate,@product_SGST_percentage,@product_SGST_rate,@product_IGST_percentage,@product_IGST_rate,@product_market_price,@product_sell_price,@product_discount_percentage,@product_discount_price,@product_with_gst_Price,@product_final_sell_price,@total_market_price,@product_shipping_charge,@total_amount_of_product,@total_order_amount,@product_photo,@payment_mode,@order_status,@order_section,@coupan_value,@payment_id,@payment_order_id,@transaction_status,@transaction_id,@transaction_gatway_name,@bank_transaction_id,@payment_request_id,@transaction_payment_mode)";
             cmd.CommandType = CommandType.Text;
             cmd.Parameters.AddWithValue("@coupan_value", 0.0);
             cmd.Parameters.AddWithValue("@order_section", "Grocery");
@@ -597,24 +628,26 @@ public class Master
             cmd.Parameters.AddWithValue("@product_CGST_rate", Convert.ToDouble(reader1["product_CGST_rate"].ToString()));
             cmd.Parameters.AddWithValue("@product_SGST_percentage", Convert.ToDouble(reader1["product_SGST_percentage"].ToString()));
             cmd.Parameters.AddWithValue("@product_SGST_rate", Convert.ToDouble(reader1["product_SGST_rate"].ToString()));
-            string igst = reader1["product_IGST_percentage"].ToString();
-            if (reader1["product_IGST_percentage"].ToString() == "")
-            {
-                cmd.Parameters.AddWithValue("@product_IGST_percentage", 0.0);
-            }
-            else
-            {
-                cmd.Parameters.AddWithValue("@product_IGST_percentage", Convert.ToDouble(reader1["product_IGST_percentage"].ToString()));
-            }
+            cmd.Parameters.AddWithValue("@product_IGST_percentage", product_IGST_percentage);
+            cmd.Parameters.AddWithValue("@product_IGST_rate", product_IGST_rate);
+            //string igst = reader1["product_IGST_percentage"].ToString();
+            //if (reader1["product_IGST_percentage"].ToString() == "")
+            //{
+            //    cmd.Parameters.AddWithValue("@product_IGST_percentage", product_IGST_percentage);
+            //}
+            //else
+            //{
+            //    cmd.Parameters.AddWithValue("@product_IGST_percentage", Convert.ToDouble(reader1["product_IGST_percentage"].ToString()));
+            //}
 
-            if (reader1["product_IGST_rate"].ToString() == "")
-            {
-                cmd.Parameters.AddWithValue("@product_IGST_rate", 0.00);
-            }
-            else
-            {
-                cmd.Parameters.AddWithValue("@product_IGST_rate", Convert.ToDouble(reader1["product_IGST_rate"].ToString()));
-            }
+            //if (reader1["product_IGST_rate"].ToString() == "")
+            //{
+            //    cmd.Parameters.AddWithValue("@product_IGST_rate", product_IGST_rate);
+            //}
+            //else
+            //{
+            //    cmd.Parameters.AddWithValue("@product_IGST_rate", Convert.ToDouble(reader1["product_IGST_rate"].ToString()));
+            //}
 
             cmd.Parameters.AddWithValue("@product_market_price", Convert.ToDouble(reader1["product_market_price"].ToString()));
             cmd.Parameters.AddWithValue("@product_sell_price", Convert.ToDouble(reader1["product_sell_price"].ToString()));
@@ -623,12 +656,21 @@ public class Master
             cmd.Parameters.AddWithValue("@product_with_gst_Price", Convert.ToDouble(reader1["product_with_gst_Price"].ToString()));
             cmd.Parameters.AddWithValue("@product_final_sell_price", Convert.ToDouble(reader1["product_final_sell_price"].ToString()));
             cmd.Parameters.AddWithValue("@total_market_price", Convert.ToDouble(reader1["product_market_price"].ToString()));
-            cmd.Parameters.AddWithValue("@product_shipping_charge", Convert.ToInt32(reader1["product_shipping_charge"].ToString()));
+            //cmd.Parameters.AddWithValue("@product_shipping_charge", Convert.ToInt32(reader1["product_shipping_charge"].ToString()));
+            cmd.Parameters.AddWithValue("@product_shipping_charge", Convert.ToInt32("100"));
             cmd.Parameters.AddWithValue("@total_amount_of_product", total_amount_of_product);
             cmd.Parameters.AddWithValue("@total_order_amount", total_order_amount);
             cmd.Parameters.AddWithValue("@product_photo", reader1["photo_path"].ToString());
-            cmd.Parameters.AddWithValue("@payment_mode", "Cash on Delivery");
+            cmd.Parameters.AddWithValue("@payment_mode", payment_mode);
             cmd.Parameters.AddWithValue("@order_status", "Processing");
+            cmd.Parameters.AddWithValue("@payment_id", payment_id);
+            cmd.Parameters.AddWithValue("@payment_order_id", payment_order_id);
+            cmd.Parameters.AddWithValue("@transaction_status", transaction_status);
+            cmd.Parameters.AddWithValue("@transaction_id", transaction_id);
+            cmd.Parameters.AddWithValue("@payment_request_id", payment_request_id);
+            cmd.Parameters.AddWithValue("@bank_transaction_id", bank_transaction_id);
+            cmd.Parameters.AddWithValue("@transaction_gatway_name", transaction_gatway_name);
+            cmd.Parameters.AddWithValue("@transaction_payment_mode", transaction_payment_mode);
 
             reader1.Close();
             con.Close();
@@ -641,6 +683,6 @@ public class Master
         return (RowsAffected);
     }
 
-    
+
 
 }

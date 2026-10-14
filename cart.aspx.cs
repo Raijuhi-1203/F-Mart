@@ -37,6 +37,12 @@ public partial class cart : System.Web.UI.Page
 
                 subtotal.InnerText = "Rs. " + (getsubtotal(Session["customer_id"].ToString()));
                 totalamt.InnerText = "Rs. " + (gettotal(Session["customer_id"].ToString()));
+                double amt = Convert.ToDouble(getsubtotal(Session["customer_id"].ToString()));
+                double gstt = (amt * 18) / 100;
+                gst.InnerText = "Rs. " + gstt.ToString();
+                double ttl = Convert.ToDouble(gettotal(Session["customer_id"].ToString()));
+                ttl = ttl + gstt;
+                totalamt.InnerText = "Rs. " + ttl;
             }
             else
             {
@@ -102,7 +108,7 @@ public partial class cart : System.Web.UI.Page
 
     private void BindData()
     {
-        rptbinddata.DataSource = mst.GetData("select d.*,a.*,b.*,c.*, d.id as cart_id,(CAST(d.cart_qty as float) * CAST(b.product_sell_price as float)) as total from ecommerce_cart d left join ecommerce_product as a on d.product_id=a.product_id left join ecommerce_product_price as b on d.product_id=b.product_id left join ecommerce_product_photos as c on d.product_id=c.product_id where d.customer_id='" + Session["customer_id"].ToString() + "'");
+        rptbinddata.DataSource = mst.GetData("select d.*,a.*,b.*,(select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path, d.id as cart_id,(CAST(d.cart_qty as float) * CAST(b.product_sell_price as float)) as total from ecommerce_cart d left join ecommerce_product as a on d.product_id=a.product_id left join ecommerce_product_price as b on d.product_id=b.product_id where d.customer_id='" + Session["customer_id"].ToString() + "'");
         rptbinddata.DataBind();
     }
 
