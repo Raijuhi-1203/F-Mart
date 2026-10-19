@@ -91,7 +91,7 @@ public partial class cart : System.Web.UI.Page
         {
             SqlCommand cmd = new SqlCommand();
             #region SQl select command
-            cmd.CommandText = @"SELECT sum(cast(a.product_sellername as float))product_sell_price FROM  ecommerce_cart a where customer_id='" + customer_id + "'";
+            cmd.CommandText = @"SELECT ISNULL(SUM(CAST(a.product_sellername AS FLOAT)), 0) AS product_sell_price FROM  ecommerce_cart a where customer_id='" + customer_id + "'";
             #endregion
             cmd.CommandType = CommandType.Text;
             cmd.Connection = con;

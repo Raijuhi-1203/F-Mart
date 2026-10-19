@@ -50,19 +50,19 @@ public partial class MasterPage : System.Web.UI.MasterPage
                 btnlogout.Visible = false;
                 //Response.Redirect("login.aspx");
             }
-            
+
         }
     }
 
     private void BindData()
     {
-        
-        Repeater1.DataSource = mst.GetData("SELECT * FROM ecommerce_category where main_category_id='0' and category_orderno!='1' and category_orderno!='4' order by id asc");
+
+        Repeater1.DataSource = mst.GetData("SELECT * FROM ecommerce_category WHERE main_category_id='0' AND category_orderno!='1' AND category_orderno!='4' AND category_status='yes' ORDER BY id ASC");
         Repeater1.DataBind();
 
-        rptbinddata.DataSource = mst.GetData("SELECT * FROM ecommerce_category where main_category_id='0' and category_orderno='1' or category_orderno='4' order by id asc");
+        rptbinddata.DataSource = mst.GetData("SELECT * FROM ecommerce_category WHERE main_category_id='0' AND (category_orderno='1' OR category_orderno='4') AND category_status='yes' ORDER BY id ASC");
         rptbinddata.DataBind();
-        
+
     }
 
     protected void btnsrch_ServerClick(object sender, EventArgs e)
@@ -85,14 +85,14 @@ public partial class MasterPage : System.Web.UI.MasterPage
     {
         if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
         {
-           
+
             Label currentParent = (Label)e.Item.FindControl("catid");
 
             Repeater Repeater2 = (Repeater)e.Item.FindControl("Repeater2");
 
             if (Repeater2 != null)
             {
-                Repeater2.DataSource = mst.GetData("SELECT * FROM ecommerce_category where main_category_id='"+ currentParent.Text +"' order by id asc");
+                Repeater2.DataSource = mst.GetData("SELECT * FROM ecommerce_category where main_category_id='" + currentParent.Text + "' order by id asc");
                 Repeater2.DataBind();
             }
         }

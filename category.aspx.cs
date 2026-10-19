@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Activities.Statements;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing.Printing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -48,7 +46,7 @@ public partial class category : System.Web.UI.Page
     }
     private void BindData()
     {
-        rptbinddata.DataSource = mst.GetData("SELECT * FROM ecommerce_category order by id asc");
+        rptbinddata.DataSource = mst.GetData("SELECT * FROM ecommerce_category WHERE category_status='yes' ORDER BY id ASC");
         rptbinddata.DataBind();
     }
 
@@ -58,7 +56,7 @@ public partial class category : System.Web.UI.Page
         {
             Label catnm = (Label)rptbinddata.Items[e.Item.ItemIndex].FindControl("catnm");
 
-            Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where product_parent_category_id='" + catnm.Text + "'");
+            Repeater1.DataSource = mst.GetData("select a.*,b.*,(select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id where a.product_parent_category_id='" + catnm.Text + "' AND a.publish_status='yes'");
             Repeater1.DataBind();
 
             if (Repeater1.Items.Count == 0)
@@ -93,7 +91,7 @@ public partial class category : System.Web.UI.Page
 
     private void BindData2()
     {
-        Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id");
+        Repeater1.DataSource = mst.GetData("select a.*,b.*,(select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id where a.publish_status='yes'");
         Repeater1.DataBind();
 
         if (Repeater1.Items.Count == 0)
@@ -164,7 +162,7 @@ public partial class category : System.Web.UI.Page
 
     protected void btnsearch_ServerClick(object sender, EventArgs e)
     {
-        Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where a.product_parent_category_name like '%" + productSearch.Text + "%' or  a.product_full_name like '%" + productSearch.Text + "%' or  a.product_short_name like '%" + productSearch.Text + "%'");
+        Repeater1.DataSource = mst.GetData("select a.*,b.*,(select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id where a.product_parent_category_name like '%" + productSearch.Text + "%' or  a.product_full_name like '%" + productSearch.Text + "%' or  a.product_short_name like '%" + productSearch.Text + "%'");
         Repeater1.DataBind();
 
         if (Repeater1.Items.Count == 0)
@@ -181,7 +179,7 @@ public partial class category : System.Web.UI.Page
     {
         if (priceRange.SelectedValue.ToString() == "10000 to 25000")
         {
-            Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where b.product_sell_price between '10000' and '25000'");
+            Repeater1.DataSource = mst.GetData("select a.*,b.*,(select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id where b.product_sell_price between '10000' and '25000'");
             Repeater1.DataBind();
 
             if (Repeater1.Items.Count == 0)
@@ -195,7 +193,7 @@ public partial class category : System.Web.UI.Page
         }
         else if (priceRange.SelectedValue.ToString() == "25000 to 50000")
         {
-            Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where b.product_sell_price between '25000' and '50000'");
+            Repeater1.DataSource = mst.GetData("select a.*,b.*,(select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id where b.product_sell_price between '25000' and '50000'");
             Repeater1.DataBind();
 
             if (Repeater1.Items.Count == 0)
@@ -209,7 +207,7 @@ public partial class category : System.Web.UI.Page
         }
         else if (priceRange.SelectedValue.ToString() == "50000 to Above")
         {
-            Repeater1.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where b.product_sell_price > '50000'");
+            Repeater1.DataSource = mst.GetData("select a.*,b.*,(select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id where b.product_sell_price > '50000'");
             Repeater1.DataBind();
 
             if (Repeater1.Items.Count == 0)
@@ -251,10 +249,10 @@ public partial class category : System.Web.UI.Page
 
     private void BindProducts(string catid)
     {
-        string query = @"SELECT a.*, b.*, c.*
+        string query = @"SELECT a.*, b.*, (select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path
                      FROM ecommerce_product a
                      LEFT JOIN ecommerce_product_price b ON a.product_id = b.product_id
-                     LEFT JOIN ecommerce_product_photos c ON a.product_id = c.product_id
+                     
                      WHERE a.product_parent_category_id = @catid
                         OR a.product_sub_category_id = @catid
                      ORDER BY a.id DESC";

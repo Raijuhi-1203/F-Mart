@@ -7,11 +7,12 @@
     <section id="hero" class="hero section">
         <div class="container">
             <div class="row align-items-center gy-5">
+                
                 <!-- Left Visual with Circle Backdrop -->
                 <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-right" data-aos-delay="100">
                     <div class="hero-image-wrapper">
                         <div class="hero-circle-backdrop"></div>
-                        <img src="assets/img/hero-chair.jpg" alt="Featured Seating Chair"
+                        <img src="assets/img/hero-chair.png" alt="Featured Office Chair"
                             class="hero-featured-img img-fluid">
                     </div>
                 </div>
@@ -73,8 +74,8 @@
                     <div class="nova-capsule-wrapper">
                         <div class="nova-capsule">
                             <div class="nova-content">
-                                <h4 class="nova-title">Nova Chair</h4>
-                                <div class="nova-price">Rs. 25000.00</div>
+                                <h4 class="nova-title">Fixed Frame Chair</h4>
+                                <div class="nova-price">Rs. 8050.00</div>
                                 <a href="category.aspx" class="nova-btn-shop">Shop Now</a>
                             </div>
                             <div class="nova-image-holder">
@@ -84,7 +85,7 @@
                                          1) Direct file replace karke: assets/img/nova-chair.png
                                          2) Ya niche <img> tag me src attribute change karke: src="assets/img/your-image.png"
                                          ========================================================================= -->
-                                <img src="assets/img/nova-chair.png" alt="Nova Chair"
+                                <img src="assets/img/nova-chair1.png" alt="Nova Chair"
                                     class="nova-chair-img img-fluid">
                             </div>
                         </div>
@@ -131,7 +132,7 @@
                         }
                 </script>
 
-                <div class="swiper-wrapper">
+                <%--<div class="swiper-wrapper">
 
                     <!-- Slide 1: Trending Now (Purple) -->
                     <div class="swiper-slide">
@@ -200,7 +201,7 @@
                         </div>
                     </div>
 
-                </div>
+                </div>--%>
 
                 <!-- Pagination -->
                 <div class="swiper-pagination promo-swiper-pagination"></div>
@@ -725,7 +726,7 @@
         }
     </style>
 
-    <section id="shop-categories" class="shop-categories-section section">
+   <%-- <section id="shop-categories" class="shop-categories-section section">
 
         <div class="container" data-aos="fade-up">
 
@@ -775,7 +776,7 @@
 
         </div>
 
-    </section>
+    </section>--%>
 
     <!-- Best Sellers Section -->
     <section id="best-sellers" class="best-sellers section">
@@ -2021,7 +2022,7 @@
                 <!-- Left Content -->
                 <div class="col-lg-5">
 
-                    <div class="faq-intro" data-aos="fade-right">
+                    <div class="faq-intro">
 
                         <span class="faq-badge">
                             <i class="bi bi-patch-question"></i>
@@ -2056,7 +2057,7 @@
                 <!-- Right FAQ -->
                 <div class="col-lg-7">
 
-                    <div class="faq-list" data-aos="fade-left">
+                    <div class="faq-list">
 
                         <!-- 01 -->
                         <div class="faq-item">

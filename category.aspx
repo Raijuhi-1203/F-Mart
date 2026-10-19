@@ -174,8 +174,6 @@
 
                 </section>
                 <!-- /Category Product List Section -->
-
-
-
             </div>
 </asp:Content>
+

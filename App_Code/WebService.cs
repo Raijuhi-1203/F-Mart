@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Script.Serialization;
@@ -18,7 +20,7 @@ public class WebService : System.Web.Services.WebService
 {
 
     string cs = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-
+    string paymentId, orderId,signature,paymentStatus;
     public WebService()
     {
 
@@ -1312,12 +1314,11 @@ public class WebService : System.Web.Services.WebService
     public String get_allorder(string customer_id)
     {
 
-
         using (SqlConnection con = new SqlConnection(cs))
         {
             SqlCommand cmd = new SqlCommand();
             #region SQl select command
-            cmd.CommandText = @"select (select isnull(sum(total_amount_of_product),0) from ecommerce_order where order_id=a.order_id and order_status!='Cancelled')total,MAX(a.product_shipping_charge) as product_shipping_charge,MAX(a.product_photo) as product_photo,MAX(a.total_amount_of_product) as total_amount_of_product,MAX(a.product_unit_value) as product_unit_value,MAX(a.product_unit) as product_unit,MAX(a.product_qty) as product_qty,MAX(a.product_name) as product_name,MAX(a.product_id) as product_id,MAX(a.billing_landmark) as billing_landmark,MAX(a.billing_pincode) as billing_pincode,MAX(a.billing_state_name) as billing_state_name,MAX(a.billing_city_name) as billing_city_name,MAX(a.billing_address_line2) as billing_address_line2,MAX(a.billing_address_line1) as billing_address_line1,MAX(a.guest_id) as guest_id,MAX(a.customer_email) as customer_email,MAX(a.customer_mobileno) as customer_mobileno,MAX(a.customer_name) as customer_name,MAX(a.order_time) as order_time,MAX(a.order_date) as order_date,MAX(a.sub_order_id) as sub_order_id,MAX(a.sub_order_id_temp) as sub_order_id_temp,MAX(a.order_id_temp) as order_id_temp,MAX(a.order_id) as order_id,MAX(a.total_order_amount) AS total_order_amount,MAX(a.coupan_value) as coupan_value,MAX(a.coupan_code) as coupan_code,MAX(a.payment_mode)as payment_mode,MAX(a.order_delivery_date) as order_delivery_date,MAX(a.order_delivery_time)as order_delivery_time,MAX(a.order_status) as order_status,MAX(a.customer_id) as customer_id from ecommerce_order a where a.customer_id='" + customer_id + "' group by order_id";
+            cmd.CommandText = @"select MAX(a.id) as id,(select isnull(sum(total_amount_of_product),0) from ecommerce_order where order_id=a.order_id and order_status!='Cancelled')total,MAX(a.product_shipping_charge) as product_shipping_charge,MAX(a.product_photo) as product_photo,MAX(a.total_amount_of_product) as total_amount_of_product,MAX(a.product_unit_value) as product_unit_value,MAX(a.product_unit) as product_unit,MAX(a.product_qty) as product_qty,MAX(a.product_name) as product_name,MAX(a.product_id) as product_id,MAX(a.billing_landmark) as billing_landmark,MAX(a.billing_pincode) as billing_pincode,MAX(a.billing_state_name) as billing_state_name,MAX(a.billing_city_name) as billing_city_name,MAX(a.billing_address_line2) as billing_address_line2,MAX(a.billing_address_line1) as billing_address_line1,MAX(a.guest_id) as guest_id,MAX(a.customer_email) as customer_email,MAX(a.customer_mobileno) as customer_mobileno,MAX(a.customer_name) as customer_name,MAX(a.order_time) as order_time,MAX(a.order_date) as order_date,MAX(a.sub_order_id) as sub_order_id,MAX(a.sub_order_id_temp) as sub_order_id_temp,MAX(a.order_id_temp) as order_id_temp,MAX(a.order_id) as order_id,MAX(a.total_order_amount) AS total_order_amount,MAX(a.coupan_value) as coupan_value,MAX(a.coupan_code) as coupan_code,MAX(a.payment_mode)as payment_mode,MAX(a.order_delivery_date) as order_delivery_date,MAX(a.order_delivery_time)as order_delivery_time,MAX(a.order_status) as order_status,MAX(a.customer_id) as customer_id from ecommerce_order a where a.customer_id='" + customer_id + "' group by order_id order by id desc";
             #endregion
             cmd.CommandType = CommandType.Text;
             cmd.Connection = con;
@@ -1651,10 +1652,11 @@ public class WebService : System.Web.Services.WebService
 
 
     [WebMethod]
-    public void addorder(string guest_id, string payment_mode, string items, string address, string total_order_amount, string customer_id)
+    public void addorder(string product_IGST_rate, string guest_id, string payment_mode, string items, string address, string total_order_amount, string customer_id, string payment_id, string payment_order_id, string transaction_status, string transaction_id, string transaction_gatway_name, string bank_transaction_id, string payment_request_id, string transaction_payment_mode)
     {
         string order_id_temp = getorder_id_temp();
         string order_id = "ODR" + order_id_temp;
+
 
         var add = JsonConvert.DeserializeObject<List<Address>>(address);
         var product = JsonConvert.DeserializeObject<List<ProductModel>>(items);
@@ -1695,7 +1697,7 @@ public class WebService : System.Web.Services.WebService
                 SqlCommand cmd = new SqlCommand();
                 #region SQl select command
 
-                cmd.CommandText = @"insert into ecommerce_order (guest_id,order_id_temp,order_id,cart_no,order_date,order_time,customer_id,customer_name,customer_mobileno,customer_email,billing_address_line1,billing_address_line2,billing_city_id,billing_city_name,billing_state_id,billing_state_name,billing_pincode,billing_landmark,product_id,product_price_id,product_name,product_hsn_sac,product_qty,product_unit,product_unit_value,product_currecny,product_GST_type,product_tax_type,product_GST_percentage,product_GST_rate,product_CGST_percentage,product_CGST_rate,product_SGST_percentage,product_SGST_rate,product_IGST_percentage,product_IGST_rate,product_market_price,product_sell_price,product_discount_percentage,product_discount_price,product_with_gst_Price,product_final_sell_price,total_market_price,product_shipping_charge,total_amount_of_product,total_order_amount,product_photo,payment_mode,order_status,order_section,coupan_value) values (@guest_id,@order_id_temp,@order_id,@cart_no,@order_date,@order_time,@customer_id,@customer_name,@customer_mobileno,@customer_email,@billing_address_line1,@billing_address_line2,@billing_city_id,@billing_city_name,@billing_state_id,@billing_state_name,@billing_pincode,@billing_landmark,@product_id,@product_price_id,@product_name,@product_hsn_sac,@product_qty,@product_unit,@product_unit_value,@product_currecny,@product_GST_type,@product_tax_type,@product_GST_percentage,@product_GST_rate,@product_CGST_percentage,@product_CGST_rate,@product_SGST_percentage,@product_SGST_rate,@product_IGST_percentage,@product_IGST_rate,@product_market_price,@product_sell_price,@product_discount_percentage,@product_discount_price,@product_with_gst_Price,@product_final_sell_price,@total_market_price,@product_shipping_charge,@total_amount_of_product,@total_order_amount,@product_photo,@payment_mode,@order_status,@order_section,@coupan_value)";
+                cmd.CommandText = @"insert into ecommerce_order (payment_id,payment_order_id,transaction_status,transaction_id,payment_request_id,bank_transaction_id,transaction_gatway_name,transaction_payment_mode,guest_id,order_id_temp,order_id,cart_no,order_date,order_time,customer_id,customer_name,customer_mobileno,customer_email,billing_address_line1,billing_address_line2,billing_city_id,billing_city_name,billing_state_id,billing_state_name,billing_pincode,billing_landmark,product_id,product_price_id,product_name,product_hsn_sac,product_qty,product_unit,product_unit_value,product_currecny,product_GST_type,product_tax_type,product_GST_percentage,product_GST_rate,product_CGST_percentage,product_CGST_rate,product_SGST_percentage,product_SGST_rate,product_IGST_percentage,product_IGST_rate,product_market_price,product_sell_price,product_discount_percentage,product_discount_price,product_with_gst_Price,product_final_sell_price,total_market_price,product_shipping_charge,total_amount_of_product,total_order_amount,product_photo,payment_mode,order_status,order_section,coupan_value) values (@payment_id,@payment_order_id,@transaction_status,@transaction_id,@payment_request_id,@bank_transaction_id,@transaction_gatway_name,@transaction_payment_mode,@guest_id,@order_id_temp,@order_id,@cart_no,@order_date,@order_time,@customer_id,@customer_name,@customer_mobileno,@customer_email,@billing_address_line1,@billing_address_line2,@billing_city_id,@billing_city_name,@billing_state_id,@billing_state_name,@billing_pincode,@billing_landmark,@product_id,@product_price_id,@product_name,@product_hsn_sac,@product_qty,@product_unit,@product_unit_value,@product_currecny,@product_GST_type,@product_tax_type,@product_GST_percentage,@product_GST_rate,@product_CGST_percentage,@product_CGST_rate,@product_SGST_percentage,@product_SGST_rate,@product_IGST_percentage,@product_IGST_rate,@product_market_price,@product_sell_price,@product_discount_percentage,@product_discount_price,@product_with_gst_Price,@product_final_sell_price,@total_market_price,@product_shipping_charge,@total_amount_of_product,@total_order_amount,@product_photo,@payment_mode,@order_status,@order_section,@coupan_value)";
 
                 #endregion
                 cmd.CommandType = CommandType.Text;
@@ -1735,24 +1737,26 @@ public class WebService : System.Web.Services.WebService
                 cmd.Parameters.AddWithValue("@product_CGST_rate", p.product_CGST_rate);
                 cmd.Parameters.AddWithValue("@product_SGST_percentage", p.product_SGST_percentage);
                 cmd.Parameters.AddWithValue("@product_SGST_rate", p.product_SGST_rate);
+                cmd.Parameters.AddWithValue("@product_IGST_percentage", "18");
+                cmd.Parameters.AddWithValue("@product_IGST_rate", product_IGST_rate);
 
-                if (p.product_IGST_percentage == null)
-                {
-                    cmd.Parameters.AddWithValue("@product_IGST_percentage", "0.00");
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@product_IGST_percentage", p.product_IGST_percentage);
-                }
+                //if (p.product_IGST_percentage == null)
+                //{
+                //    cmd.Parameters.AddWithValue("@product_IGST_percentage", "0.00");
+                //}
+                //else
+                //{
+                //    cmd.Parameters.AddWithValue("@product_IGST_percentage", p.product_IGST_percentage);
+                //}
 
-                if (p.product_IGST_rate == null)
-                {
-                    cmd.Parameters.AddWithValue("@product_IGST_rate", "0.00");
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@product_IGST_rate", p.product_IGST_rate);
-                }
+                //if (p.product_IGST_rate == null)
+                //{
+                //    cmd.Parameters.AddWithValue("@product_IGST_rate", "0.00");
+                //}
+                //else
+                //{
+                //    cmd.Parameters.AddWithValue("@product_IGST_rate", p.product_IGST_rate);
+                //}
 
 
                 cmd.Parameters.AddWithValue("@product_market_price", p.product_market_price);
@@ -1767,6 +1771,14 @@ public class WebService : System.Web.Services.WebService
                 cmd.Parameters.AddWithValue("@total_order_amount", total_order_amount);
                 cmd.Parameters.AddWithValue("@product_photo", p.photo_path);
                 cmd.Parameters.AddWithValue("@payment_mode", payment_mode);
+                cmd.Parameters.AddWithValue("@payment_id", payment_id);
+                cmd.Parameters.AddWithValue("@payment_order_id", payment_order_id);
+                cmd.Parameters.AddWithValue("@transaction_status", transaction_status);
+                cmd.Parameters.AddWithValue("@transaction_id", transaction_id);
+                cmd.Parameters.AddWithValue("@payment_request_id", payment_request_id);
+                cmd.Parameters.AddWithValue("@bank_transaction_id", bank_transaction_id);
+                cmd.Parameters.AddWithValue("@transaction_gatway_name", transaction_gatway_name);
+                cmd.Parameters.AddWithValue("@transaction_payment_mode", transaction_payment_mode);
                 cmd.Parameters.AddWithValue("@order_status", "Processing");
                 cmd.Connection = con;
                 con.Open();
@@ -2055,5 +2067,253 @@ public class WebService : System.Web.Services.WebService
 
             return strJSON;
         }
+
     }
+
+    [WebMethod]
+    [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public string get_razorpay_payment(string order_id)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(order_id))
+            {
+                return JsonConvert.SerializeObject(new[]
+                {
+                new
+                {
+                    success = false,
+                    message = "Order ID is required"
+                }
+            });
+            }
+
+            string keyId = "rzp_test_TnGdTwLOWkY12U";
+            string keySecret = "DpcwnkNEEbN3U8s9Q1RCTCyI";
+
+            string url = "https://api.razorpay.com/v1/orders/"
+                         + Uri.EscapeDataString(order_id) + "/payments";
+
+            HttpWebRequest request =
+                (HttpWebRequest)WebRequest.Create(url);
+
+            request.Method = "GET";
+            request.ContentType = "application/json";
+
+            string credentials = Convert.ToBase64String(
+                Encoding.UTF8.GetBytes(keyId + ":" + keySecret));
+
+            request.Headers[HttpRequestHeader.Authorization] =
+                "Basic " + credentials;
+
+            using (HttpWebResponse response =
+                   (HttpWebResponse)request.GetResponse())
+            using (StreamReader reader =
+                   new StreamReader(response.GetResponseStream()))
+            {
+                string json = reader.ReadToEnd();
+
+                JObject result = JObject.Parse(json);
+                JArray items = result["items"] as JArray ?? new JArray();
+
+                var payments = new List<object>();
+
+                foreach (JObject p in items)
+                {
+                    JObject acquirer =
+                        p["acquirer_data"] as JObject ?? new JObject();
+
+                    payments.Add(new
+                    {
+                        payment_id = (string)p["id"],
+                        order_id = (string)p["order_id"],
+                        payment_status = (string)p["status"],
+                        amount_paise = (long?)p["amount"] ?? 0,
+                        amount_rupees = ((long?)p["amount"] ?? 0) / 100.0,
+                        currency = (string)p["currency"],
+                        payment_method = (string)p["method"],
+                        captured = (bool?)p["captured"] ?? false,
+
+                        bank = (string)p["bank"],
+                        wallet = (string)p["wallet"],
+                        upi_vpa = (string)p["vpa"],
+
+                        bank_rrn = (string)acquirer["rrn"],
+                        bank_transaction_id =
+                            (string)acquirer["bank_transaction_id"],
+                        auth_code = (string)acquirer["auth_code"],
+
+                        amount_refunded =
+                            ((long?)p["amount_refunded"] ?? 0) / 100.0,
+                        refund_status = (string)p["refund_status"],
+
+                        email = (string)p["email"],
+                        contact = (string)p["contact"],
+
+                        fee = ((long?)p["fee"] ?? 0) / 100.0,
+                        tax = ((long?)p["tax"] ?? 0) / 100.0,
+
+                        error_code = (string)p["error_code"],
+                        error_description = (string)p["error_description"],
+                        error_reason = (string)p["error_reason"],
+
+                        created_at = (long?)p["created_at"]
+                    });
+                }
+
+                return JsonConvert.SerializeObject(new[]
+                {
+                new
+                {
+                    success = true,
+                    order_id = order_id,
+                    count = payments.Count,
+                    payments = payments
+                }
+            });
+            }
+        }
+        catch (WebException ex)
+        {
+            string errorMessage = ex.Message;
+
+            if (ex.Response != null)
+            {
+                using (StreamReader reader =
+                       new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    errorMessage = reader.ReadToEnd();
+                }
+            }
+
+            return JsonConvert.SerializeObject(new[]
+            {
+            new
+            {
+                success = false,
+                message = "Unable to fetch Razorpay payment details",
+                error = errorMessage
+            }
+        });
+        }
+        catch (Exception ex)
+        {
+            return JsonConvert.SerializeObject(new[]
+            {
+            new
+            {
+                success = false,
+                message = ex.Message
+            }
+        });
+        }
+    }
+
+
+    [WebMethod]
+    [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public string create_razorpay_order(decimal amount)
+    {
+        try
+        {
+            if (amount <= 0)
+            {
+                return JsonConvert.SerializeObject(new[]
+                {
+                new
+                {
+                    success = false,
+                    message = "Amount must be greater than zero"
+                }
+            });
+            }
+
+            string keyId = "rzp_test_TnGdTwLOWkY12U";
+            string keySecret = "DpcwnkNEEbN3U8s9Q1RCTCyI";
+
+            long amountPaise = decimal.ToInt64(Math.Round(amount * 100, 0, MidpointRounding.AwayFromZero));
+
+            string url = "https://api.razorpay.com/v1/orders";
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+
+            request.Method = "POST";
+            request.ContentType = "application/json";
+
+            string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(keyId + ":" + keySecret));
+
+            request.Headers[HttpRequestHeader.Authorization] ="Basic " + credentials;
+
+            var orderData = new
+            {
+                amount = amountPaise,
+                currency = "INR",
+                receipt = Guid.NewGuid().ToString("N")
+            };
+
+            string json = JsonConvert.SerializeObject(orderData);
+            byte[] bytes = Encoding.UTF8.GetBytes(json);
+
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(bytes, 0, bytes.Length);
+            }
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            {
+                string responseJson = reader.ReadToEnd();
+                JObject result = JObject.Parse(responseJson);
+
+                return JsonConvert.SerializeObject(new[]
+                {
+                new
+                {
+                    success = true,
+                    key_id = keyId,
+                    order_id = (string)result["id"],
+                    amount = (long?)result["amount"],
+                    currency = (string)result["currency"],
+                    receipt = (string)result["receipt"],
+                    status = (string)result["status"]
+                }
+            });
+            }
+        }
+        catch (WebException ex)
+        {
+            string error = "Unable to create Razorpay order";
+
+            if (ex.Response != null)
+            {
+                using (StreamReader reader =
+                       new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    error = reader.ReadToEnd();
+                }
+            }
+
+            return JsonConvert.SerializeObject(new[]
+            {
+            new
+            {
+                success = false,
+                message = error
+            }
+        });
+        }
+        catch (Exception ex)
+        {
+            return JsonConvert.SerializeObject(new[]
+            {
+            new
+            {
+                success = false,
+                message = ex.Message
+            }
+        });
+        }
+    }
+
+
 }

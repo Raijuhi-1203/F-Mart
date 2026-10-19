@@ -27,7 +27,7 @@ public partial class categories_product : System.Web.UI.Page
         if (!IsPostBack)
         {
             BindData();
-            
+
         }
     }
 
@@ -40,7 +40,7 @@ public partial class categories_product : System.Web.UI.Page
 
     private void BindData()
     {
-        rptbinddata.DataSource = mst.GetData("select a.*,b.*,c.* from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id left join ecommerce_product_photos as c on a.product_id=c.product_id where a.product_parent_category_id='" + Request.QueryString[0] + "' or a.product_sub_category_id='"+ Request.QueryString[0] + "'");
+        rptbinddata.DataSource = mst.GetData("select a.*,b.*,(select top 1 photo_path from ecommerce_product_photos where product_id=a.product_id) as photo_path from ecommerce_product a left join ecommerce_product_price as b on a.product_id=b.product_id where (a.product_parent_category_id='" + Request.QueryString[0] + "' or a.product_sub_category_id='" + Request.QueryString[0] + "') AND a.publish_status = 'yes'");
         rptbinddata.DataBind();
 
         if (rptbinddata.Items.Count == 0)
@@ -52,7 +52,7 @@ public partial class categories_product : System.Web.UI.Page
             NoDataPanel.Visible = false;
         }
     }
-    
+
     protected void rptbinddata_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
         if (Session["customer_id"] != null)
